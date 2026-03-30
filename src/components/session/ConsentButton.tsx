@@ -9,9 +9,17 @@ interface ConsentButtonProps {
   label?: string
 }
 
+// ─── Stitch "Indigo Vault" ConsentButton ──────────────────────────────────────
+// Outer SVG:   144×144  r=68  stroke-width=3
+// Track:       rgba(70,69,84,0.2)
+// Arc confirm: #C0C1FF   Arc revoke: #FFB4AB
+// Inner:       112px     gradient-bg      icon 40px
+// Acting arc:  #4EDEA3 (tertiary)
+// ─────────────────────────────────────────────────────────────────────────────
+
 const HOLD_DURATION = 600
-const RADIUS = 44
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS
+const RADIUS = 68
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS   // ≈ 427.26
 
 export function ConsentButton({ mode, onAction, disabled, label }: ConsentButtonProps) {
   const [progress, setProgress] = useState(0)
@@ -24,14 +32,18 @@ export function ConsentButton({ mode, onAction, disabled, label }: ConsentButton
     () =>
       mode === 'confirm'
         ? {
-            base: '#6366F1',
-            soft: 'rgba(99, 102, 241, 0.16)',
+            arcColor: '#C0C1FF',
+            innerGradient: 'linear-gradient(135deg, #C0C1FF 0%, #8083FF 100%)',
+            innerShadow: '0 0 40px rgba(192,193,255,0.2)',
+            iconColor: '#07006C',
             icon: ShieldCheck,
             fallbackLabel: 'Tieni premuto 600 ms per confermare',
           }
         : {
-            base: '#EF4444',
-            soft: 'rgba(239, 68, 68, 0.16)',
+            arcColor: '#FFB4AB',
+            innerGradient: 'linear-gradient(135deg, #FFB4AB 0%, #93000A 100%)',
+            innerShadow: '0 0 40px rgba(255,180,171,0.2)',
+            iconColor: '#FFDAD6',
             icon: ShieldOff,
             fallbackLabel: 'Tieni premuto 600 ms per revocare',
           },
@@ -43,7 +55,6 @@ export function ConsentButton({ mode, onAction, disabled, label }: ConsentButton
       window.clearInterval(intervalRef.current)
       intervalRef.current = null
     }
-
     startedAtRef.current = null
     completedRef.current = false
     setProgress(0)
@@ -84,7 +95,7 @@ export function ConsentButton({ mode, onAction, disabled, label }: ConsentButton
   const Icon = palette.icon
 
   return (
-    <div className="flex flex-col items-center gap-3 text-center select-none">
+    <div className="flex select-none flex-col items-center gap-4 text-center">
       <button
         type="button"
         disabled={disabled || acting}
@@ -93,38 +104,68 @@ export function ConsentButton({ mode, onAction, disabled, label }: ConsentButton
         onPointerLeave={cancelPress}
         onPointerCancel={cancelPress}
         className={cn(
-          'relative flex h-36 w-36 items-center justify-center rounded-full border border-white/10 transition duration-150 active:scale-[0.98] disabled:opacity-45',
+          'relative flex h-36 w-36 items-center justify-center rounded-full transition duration-150 active:scale-[0.97] disabled:opacity-45',
           acting && 'pointer-events-none',
         )}
-        style={{
-          background: `radial-gradient(circle at top, ${palette.soft}, rgba(15, 15, 20, 0.94) 68%)`,
-          boxShadow: `0 0 42px ${palette.soft}`,
-        }}
-        aria-label={mode === 'confirm' ? 'Tieni premuto per confermare il consenso' : 'Tieni premuto per revocare il consenso'}
+        aria-label={
+          mode === 'confirm'
+            ? 'Tieni premuto per confermare il consenso'
+            : 'Tieni premuto per revocare il consenso'
+        }
       >
-        <svg className="absolute inset-0" width="144" height="144" viewBox="0 0 144 144" aria-hidden="true">
-          <circle cx="72" cy="72" r={RADIUS} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="8" />
+        {/* SVG ring */}
+        <svg
+          className="absolute inset-0"
+          width="144"
+          height="144"
+          viewBox="0 0 144 144"
+          aria-hidden="true"
+        >
+          {/* Track */}
           <circle
             cx="72"
             cy="72"
             r={RADIUS}
             fill="none"
-            stroke={palette.base}
-            strokeWidth="8"
+            stroke="rgba(70,69,84,0.2)"
+            strokeWidth="3"
+          />
+          {/* Progress arc */}
+          <circle
+            cx="72"
+            cy="72"
+            r={RADIUS}
+            fill="none"
+            stroke={acting ? '#4EDEA3' : palette.arcColor}
+            strokeWidth="3"
             strokeLinecap="round"
             strokeDasharray={CIRCUMFERENCE}
-            strokeDashoffset={dashOffset}
+            strokeDashoffset={acting ? 0 : dashOffset}
             transform="rotate(-90 72 72)"
+            className="transition-all duration-100"
           />
         </svg>
 
-        <div className="relative z-10 flex h-24 w-24 items-center justify-center rounded-full border border-white/10 bg-black/20">
-          {acting ? <LoaderCircle className="animate-spin" size={34} color={palette.base} /> : <Icon size={34} color={palette.base} />}
+        {/* Inner circle */}
+        <div
+          className="relative z-10 flex h-28 w-28 items-center justify-center rounded-full"
+          style={{
+            background: acting
+              ? 'linear-gradient(135deg, #4EDEA3 0%, #00885D 100%)'
+              : palette.innerGradient,
+            boxShadow: acting ? '0 0 40px rgba(78,222,163,0.2)' : palette.innerShadow,
+          }}
+        >
+          {acting ? (
+            <LoaderCircle className="animate-spin" size={40} color="#003824" />
+          ) : (
+            <Icon size={40} color={palette.iconColor} />
+          )}
         </div>
       </button>
 
-      <p className="max-w-[14rem] text-sm leading-5 text-text-secondary">
-        {acting ? 'Elaborazione in corso...' : label ?? palette.fallbackLabel}
+      <p className="max-w-[15rem] text-sm font-medium leading-5 text-[#C7C4D7]">
+        {acting ? 'Elaborazione in corso...' : (label ?? palette.fallbackLabel)}
       </p>
     </div>
   )

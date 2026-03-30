@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container": "#1f1f24",
+              "on-primary": "#1000a9",
+              "on-surface": "#e4e1e9",
+              "tertiary-container": "#00885d",
+              "inverse-on-surface": "#303035",
+              "surface-bright": "#39393e",
+              "secondary-container": "#47475d",
+              "on-secondary-fixed": "#191a2e",
+              "secondary-fixed-dim": "#c6c4df",
+              "on-primary-container": "#0d0096",
+              "on-error-container": "#ffdad6",
+              "on-error": "#690005",
+              "on-tertiary-container": "#000703",
+              "surface-dim": "#131318",
+              "surface-container-low": "#1b1b20",
+              "on-background": "#e4e1e9",
+              "primary-container": "#8083ff",
+              "surface-container-high": "#2a292f",
+              "on-tertiary-fixed": "#002113",
+              "outline": "#908fa0",
+              "on-secondary-container": "#b8b6d0",
+              "tertiary-fixed": "#6ffbbe",
+              "secondary": "#c6c4df",
+              "on-tertiary-fixed-variant": "#005236",
+              "error": "#ffb4ab",
+              "inverse-surface": "#e4e1e9",
+              "on-primary-fixed-variant": "#2f2ebe",
+              "background": "#131318",
+              "inverse-primary": "#494bd6",
+              "on-secondary": "#2e2e43",
+              "surface-tint": "#c0c1ff",
+              "outline-variant": "#464554",
+              "surface-container-lowest": "#0e0e13",
+              "error-container": "#93000a",
+              "on-secondary-fixed-variant": "#45455b",
+              "on-surface-variant": "#c7c4d7",
+              "primary-fixed-dim": "#c0c1ff",
+              "surface-container-highest": "#35343a",
+              "primary-fixed": "#e1e0ff",
+              "primary": "#c0c1ff",
+              "on-tertiary": "#003824",
+              "surface-variant": "#35343a",
+              "tertiary-fixed-dim": "#4edea3",
+              "surface": "#131318",
+              "tertiary": "#4edea3",
+              "secondary-fixed": "#e2e0fc",
+              "on-primary-fixed": "#07006c"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #131318;
+      }
+      .glass-card {
+        background: linear-gradient(180deg, rgba(34, 34, 58, 0.4) 0%, rgba(26, 26, 36, 0.4) 100%);
+        backdrop-filter: blur(12px);
+      }
+      .ghost-border {
+        border: 1px solid rgba(70, 69, 84, 0.2);
+      }
+      .primary-glow {
+        box-shadow: 0 4px 40px rgba(192, 193, 255, 0.06);
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface antialiased overflow-x-hidden">
+<!-- Header / TopAppBar (JSON Mapping) -->
+<header class="fixed top-0 w-full z-50 bg-[#131318]/80 backdrop-blur-xl flex justify-between items-center px-6 h-20 after:content-[''] after:block after:h-[1px] after:w-full after:bg-[#464554]/20 after:absolute after:bottom-0 after:left-0 shadow-[0_4px_40px_rgba(99,102,241,0.06)]">
+<div class="flex items-center gap-2 text-[#C0C1FF] font-['Inter'] font-bold text-[1.75rem] tracking-tight">
+<span class="material-symbols-outlined" data-icon="shield">shield</span>
+<span>APP del Consenso</span>
+</div>
+<div class="text-[#464554] hover:opacity-80 transition-opacity active:scale-95 duration-200 cursor-pointer">
+<span class="material-symbols-outlined text-3xl" data-icon="account_circle">account_circle</span>
+</div>
+</header>
+<main class="relative pt-32 pb-40 px-6 max-w-5xl mx-auto">
+<!-- Ambient Radial Glows -->
+<div class="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-tertiary/5 rounded-full blur-[100px] pointer-events-none"></div>
+<!-- Hero Section -->
+<section class="mb-20">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-low ghost-border mb-8">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="shield">shield</span>
+<span class="text-primary text-[11px] font-bold tracking-[0.05em] uppercase">APP del Consenso</span>
+</div>
+<h1 class="text-[56px] font-bold leading-[0.95] tracking-tight mb-8 text-on-surface">
+                Installa sul tuo smartphone una traccia privata del consenso condiviso.
+            </h1>
+<p class="text-lg text-secondary leading-relaxed mb-12 max-w-2xl">
+                Apri la web app da iPhone o Android, installala in pochi secondi e usa pairing di prossimità, conferma reciproca e revoca immediata.
+            </p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="min-h-[56px] px-8 rounded-full bg-gradient-to-b from-primary to-primary-container text-on-primary font-bold text-lg flex items-center justify-center gap-2 primary-glow hover:opacity-90 transition-all active:scale-95">
+                    Apri la web app
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<a class="min-h-[56px] px-8 rounded-full bg-transparent ghost-border text-on-surface font-semibold text-lg flex items-center justify-center hover:bg-surface-container-low transition-all active:scale-95" href="#installazione">
+                    Vedi come installarla
+                </a>
+</div>
+</section>
+<!-- Feature Cards -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-20">
+<div class="glass-card p-8 rounded-lg ghost-border flex flex-col items-start gap-4">
+<div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="qr_code">qr_code</span>
+</div>
+<h3 class="text-xl font-bold">Pairing in presenza</h3>
+<p class="text-on-surface-variant text-sm">Associa il tuo profilo tramite QR Code per una validazione sicura e immediata.</p>
+</div>
+<div class="glass-card p-8 rounded-lg ghost-border flex flex-col items-start gap-4">
+<div class="w-12 h-12 rounded-2xl bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-3xl" data-icon="timer_reset">timer_off</span>
+</div>
+<h3 class="text-xl font-bold">Revoca immediata</h3>
+<p class="text-on-surface-variant text-sm">Il consenso è dinamico. Puoi revocarlo in qualsiasi istante con un semplice tap.</p>
+</div>
+<div class="glass-card p-8 rounded-lg ghost-border flex flex-col items-start gap-4">
+<div class="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-3xl" data-icon="shield">shield</span>
+</div>
+<h3 class="text-xl font-bold">Privacy by design</h3>
+<p class="text-on-surface-variant text-sm">Dati criptati end-to-end sul tuo dispositivo. Nessuna archiviazione centralizzata.</p>
+</div>
+</section>
+<!-- Warning Banner -->
+<section class="mb-20">
+<div class="bg-error-container/20 ghost-border border-error/20 p-6 rounded-lg flex gap-4 items-start">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+<p class="text-sm text-on-error-container leading-relaxed">
+<strong class="block mb-1 text-error">Attenzione</strong>
+                    L'app ha valore documentale e comunicativo. Non sostituisce il dialogo, il consenso continuo o valutazioni legali.
+                </p>
+</div>
+</section>
+<!-- Installation Section -->
+<section class="mb-20" id="installazione">
+<h2 class="text-4xl font-bold mb-12 tracking-tight">Come installarla</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- iOS Card -->
+<div class="bg-surface-container-low rounded-lg p-8 ghost-border">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-10 h-10 rounded-full bg-on-surface/5 flex items-center justify-center">
+<span class="material-symbols-outlined">ios</span>
+</div>
+<span class="text-xl font-bold">iOS / Safari</span>
+</div>
+<ol class="space-y-4 text-on-surface-variant text-sm">
+<li class="flex gap-3"><span class="text-primary font-bold">01.</span> Apri questo sito su Safari</li>
+<li class="flex gap-3"><span class="text-primary font-bold">02.</span> Tocca il tasto "Condividi"</li>
+<li class="flex gap-3"><span class="text-primary font-bold">03.</span> Seleziona "Aggiungi alla schermata Home"</li>
+</ol>
+<div class="mt-8">
+<img class="w-full h-48 object-cover rounded-xl ghost-border" data-alt="close-up of hand holding modern smartphone showing home screen icons with soft focus city background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaVOwDlaAh421QrkdwFIYFqHu31a03q1lTs2q6aw0nuA6kaMrSOn5N6hPTJSFJKpPhrOzyI_RS_9eNuZsaSqUwnJJBKrB5yEHZUU4hAF5PTF0a-Epv0hgrJWpxGPj8-dk9_6elNgDM798Sm8ltYoWi4fCaX3X5qOnM1VP2OMXZm7T0HgnxGEuwjVY24WRhgDB4Nh5f4NCemOANm8UKKTqEZ57D-fqCSxyLzrbpwCWJztMVOB7_EzHNypEbqtJX9n2sdf8uYrHy3LA"/>
+</div>
+</div>
+<!-- Android Card -->
+<div class="bg-surface-container-low rounded-lg p-8 ghost-border">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-10 h-10 rounded-full bg-on-surface/5 flex items-center justify-center">
+<span class="material-symbols-outlined">android</span>
+</div>
+<span class="text-xl font-bold">Android / Chrome</span>
+</div>
+<ol class="space-y-4 text-on-surface-variant text-sm">
+<li class="flex gap-3"><span class="text-primary font-bold">01.</span> Apri Chrome</li>
+<li class="flex gap-3"><span class="text-primary font-bold">02.</span> Tocca i tre puntini in alto a destra</li>
+<li class="flex gap-3"><span class="text-primary font-bold">03.</span> Seleziona "Installa app"</li>
+</ol>
+<div class="mt-8">
+<img class="w-full h-48 object-cover rounded-xl ghost-border" data-alt="person using android smartphone outdoors at night with vibrant neon city lights in soft bokeh background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKgx0DATsfsRxuGGjF4vZrs9FmojHLL5w1eyfsovXMVJqfX0gNqm7mo71nvQ16zFYA1fX7MU2mxzwLbooBri8tDwKb-d2kU_bWw_OcpcLZWmHhz8Tgzx93i3lMC6N8xJcBJOwB1Lgrc8bYnjMoM3orj7wNkB0UHTg3NfD6s594Q1xjbbSHo_3FOVBtZId8_To0hc7RCcjnuqG0W5l341co1XCsHZkQyHGqLiOM3EWSlxCZXSg1nThdJF29U1hWLG70jchM858mm1s"/>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (JSON Mapping) -->
+<nav class="fixed bottom-0 w-full rounded-t-[30px] z-50 bg-[#131318]/90 backdrop-blur-2xl border-t border-[#464554]/20 shadow-[0_-10px_40px_rgba(0,0,0,0.4)] px-4 pb-safe h-24 flex justify-around items-center">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center text-[#C0C1FF] font-bold bg-[#C0C1FF]/10 rounded-2xl px-6 py-2 transition-all active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[11px] font-medium tracking-[0.02em] uppercase mt-1">Home</span>
+</a>
+<!-- Cronologia -->
+<a class="flex flex-col items-center justify-center text-[#464554] px-6 py-2 hover:text-[#C0C1FF] transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="text-[11px] font-medium tracking-[0.02em] uppercase mt-1">Cronologia</span>
+</a>
+<!-- Profilo -->
+<a class="flex flex-col items-center justify-center text-[#464554] px-6 py-2 hover:text-[#C0C1FF] transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[11px] font-medium tracking-[0.02em] uppercase mt-1">Profilo</span>
+</a>
+</nav>
+</body></html>

@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import { Eye, EyeOff, ShieldCheck } from 'lucide-react'
+import { Eye, EyeOff, Lock, ShieldCheck } from 'lucide-react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
-import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores/authStore'
 
 const loginSchema = z.object({
@@ -27,109 +26,133 @@ export function LoginPage() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const parsed = loginSchema.safeParse({ email, password })
-
     if (!parsed.success) {
       setError(parsed.error.issues[0]?.message ?? 'Controlla i dati inseriti')
       return
     }
-
     setLoading(true)
     setError(null)
-
     const { error: authError } = await supabase.auth.signInWithPassword(parsed.data)
-
     if (authError) {
       setError('Email o password non corretti')
       setLoading(false)
       return
     }
-
     navigate('/app')
   }
 
   return (
-    <main className="safe-page-tight flex min-h-screen flex-col justify-between gap-8">
-      <section className="space-y-8">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/18">
-            <ShieldCheck size={22} className="text-accent" />
-          </div>
-          <div>
-            <p className="text-sm text-text-secondary">Bentornato</p>
-            <h1 className="text-2xl font-bold">Accedi al tuo spazio</h1>
-          </div>
-        </div>
+    <div className="flex min-h-screen flex-col items-center overflow-x-hidden bg-[#131318] text-[#E4E1E9]">
+      {/* Ambient glows */}
+      <div className="pointer-events-none fixed -left-24 -top-24 h-96 w-96 rounded-full bg-[#C0C1FF]/8 blur-[120px]" />
+      <div className="pointer-events-none fixed -right-24 top-1/2 h-80 w-80 rounded-full bg-[#4EDEA3]/5 blur-[100px]" />
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Field label="Email">
-            <input
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              autoComplete="email"
-              placeholder="nome@esempio.it"
-              className={fieldInputClass}
-            />
-          </Field>
+      <main className="relative flex w-full max-w-[375px] min-h-screen flex-col gap-10 px-6 pb-12 pt-20">
+        {/* Header */}
+        <header className="flex flex-col items-center gap-6 text-center">
+          <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-[#2A292F] shadow-[0_0_40px_rgba(192,193,255,0.1)]">
+            <div className="absolute inset-0 animate-pulse rounded-full border border-[#C0C1FF]/20" />
+            <ShieldCheck size={36} className="text-[#C0C1FF]" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold tracking-tight text-[#E4E1E9]">Bentornato</h1>
+            <p className="font-medium text-[#C7C4D7]">Accedi al tuo spazio</p>
+          </div>
+        </header>
 
-          <Field label="Password">
-            <div className="relative">
+        {/* Form */}
+        <section className="flex flex-col gap-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email */}
+            <div className="flex flex-col gap-2">
+              <label className="pl-4 text-[11px] font-medium uppercase tracking-[0.02em] text-[#908FA0]">
+                Email
+              </label>
               <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                autoComplete="current-password"
-                placeholder="Minimo 6 caratteri"
-                className={cn(fieldInputClass, 'pr-12')}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+                placeholder="nome@esempio.it"
+                className="h-14 w-full rounded-2xl border-none bg-white/5 px-5 text-base text-[#E4E1E9] outline-none transition placeholder:text-[#464554]/60 focus:ring-2 focus:ring-[#C0C1FF]/40"
               />
-              <button
-                type="button"
-                aria-label={showPassword ? 'Nascondi password' : 'Mostra password'}
-                onClick={() => setShowPassword((value) => !value)}
-                className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full text-text-muted transition active:scale-[0.98]"
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
             </div>
-          </Field>
 
-          {error ? (
-            <div className="rounded-2xl border border-danger/20 bg-danger/10 px-4 py-3 text-sm text-danger">{error}</div>
-          ) : null}
+            {/* Password */}
+            <div className="flex flex-col gap-2">
+              <label className="pl-4 text-[11px] font-medium uppercase tracking-[0.02em] text-[#908FA0]">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                  className="h-14 w-full rounded-2xl border-none bg-white/5 px-5 pr-14 text-base text-[#E4E1E9] outline-none transition placeholder:text-[#464554]/60 focus:ring-2 focus:ring-[#C0C1FF]/40"
+                />
+                <button
+                  type="button"
+                  aria-label={showPassword ? 'Nascondi password' : 'Mostra password'}
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#464554] transition hover:text-[#C0C1FF] active:scale-95"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex min-h-14 w-full items-center justify-center rounded-full bg-accent text-base font-semibold text-white transition active:scale-[0.98] active:opacity-90 disabled:opacity-50"
+            {error ? (
+              <div className="rounded-2xl border border-[#93000A]/30 bg-[#93000A]/20 px-4 py-3 text-sm text-[#FFB4AB]">
+                {error}
+              </div>
+            ) : null}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="h-14 w-full rounded-full bg-gradient-to-b from-[#C0C1FF] to-[#8083FF] text-base font-bold text-[#1000A9] shadow-[0_8px_30px_rgba(128,131,255,0.3)] transition active:scale-[0.98] disabled:opacity-50"
+            >
+              {loading ? 'Accesso...' : 'Accedi'}
+            </button>
+
+            <div className="pt-2 text-center">
+              <Link to="/register" className="text-sm text-[#C7C4D7] transition hover:text-[#C0C1FF]">
+                Non hai ancora un account?{' '}
+                <span className="font-semibold text-[#C0C1FF]">Registrati</span>
+              </Link>
+            </div>
+          </form>
+        </section>
+
+        {/* Privacy glass card */}
+        <section className="mt-auto">
+          <div
+            className="flex items-start gap-4 rounded-[24px] border border-[#464554]/20 p-6"
+            style={{
+              background: 'linear-gradient(180deg, rgba(34,34,58,0.4) 0%, rgba(26,26,36,0.4) 100%)',
+              backdropFilter: 'blur(12px)',
+            }}
           >
-            {loading ? 'Accesso...' : 'Accedi'}
-          </button>
-        </form>
-      </section>
+            <Lock size={20} className="mt-0.5 shrink-0 text-[#C0C1FF]" />
+            <div className="flex flex-col gap-1">
+              <h3 className="text-[13px] font-bold uppercase tracking-wide text-[#C0C1FF]">
+                Sicurezza &amp; Privacy
+              </h3>
+              <p className="text-[13px] font-medium leading-relaxed text-[#C7C4D7]">
+                Usiamo email e password solo per l&apos;autenticazione. Il profilo visibile agli altri contiene
+                soltanto pseudonimo e colore avatar.
+              </p>
+            </div>
+          </div>
+        </section>
 
-      <section className="space-y-4 pb-4">
-        <div className="panel rounded-2xl px-4 py-4 text-sm leading-6 text-text-secondary">
-          Usiamo email e password solo per l&apos;autenticazione. Il profilo visibile agli altri contiene soltanto pseudonimo e colore avatar.
+        {/* Handle bar */}
+        <div className="flex justify-center">
+          <div className="h-1 w-32 rounded-full bg-[#35343A]" />
         </div>
-        <p className="text-center text-sm text-text-secondary">
-          Non hai ancora un account?{' '}
-          <Link to="/register" className="font-semibold text-text-primary">
-            Registrati
-          </Link>
-        </p>
-      </section>
-    </main>
+      </main>
+    </div>
   )
 }
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block space-y-2">
-      <span className="text-sm font-medium text-text-secondary">{label}</span>
-      {children}
-    </label>
-  )
-}
-
-const fieldInputClass =
-  'min-h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-4 text-base text-text-primary outline-none transition placeholder:text-text-muted focus:border-accent focus:bg-white/[0.07]'

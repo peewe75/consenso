@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container": "#1f1f24",
+              "on-primary": "#1000a9",
+              "on-surface": "#e4e1e9",
+              "tertiary-container": "#00885d",
+              "inverse-on-surface": "#303035",
+              "surface-bright": "#39393e",
+              "secondary-container": "#47475d",
+              "on-secondary-fixed": "#191a2e",
+              "secondary-fixed-dim": "#c6c4df",
+              "on-primary-container": "#0d0096",
+              "on-error-container": "#ffdad6",
+              "on-error": "#690005",
+              "on-tertiary-container": "#000703",
+              "surface-dim": "#131318",
+              "surface-container-low": "#1b1b20",
+              "on-background": "#e4e1e9",
+              "primary-container": "#8083ff",
+              "surface-container-high": "#2a292f",
+              "on-tertiary-fixed": "#002113",
+              "outline": "#908fa0",
+              "on-secondary-container": "#b8b6d0",
+              "tertiary-fixed": "#6ffbbe",
+              "secondary": "#c6c4df",
+              "on-tertiary-fixed-variant": "#005236",
+              "error": "#ffb4ab",
+              "inverse-surface": "#e4e1e9",
+              "on-primary-fixed-variant": "#2f2ebe",
+              "background": "#131318",
+              "inverse-primary": "#494bd6",
+              "on-secondary": "#2e2e43",
+              "surface-tint": "#c0c1ff",
+              "outline-variant": "#464554",
+              "surface-container-lowest": "#0e0e13",
+              "error-container": "#93000a",
+              "on-secondary-fixed-variant": "#45455b",
+              "on-surface-variant": "#c7c4d7",
+              "primary-fixed-dim": "#c0c1ff",
+              "surface-container-highest": "#35343a",
+              "primary-fixed": "#e1e0ff",
+              "primary": "#c0c1ff",
+              "on-tertiary": "#003824",
+              "surface-variant": "#35343a",
+              "tertiary-fixed-dim": "#4edea3",
+              "surface": "#131318",
+              "tertiary": "#4edea3",
+              "secondary-fixed": "#e2e0fc",
+              "on-primary-fixed": "#07006c"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        background: linear-gradient(180deg, rgba(34, 34, 58, 0.4) 0%, rgba(26, 26, 36, 0.4) 100%);
+        backdrop-filter: blur(12px);
+      }
+      .ghost-border {
+        border: 1px solid rgba(70, 69, 84, 0.2);
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body min-h-screen flex flex-col items-center justify-start overflow-x-hidden">
+<!-- Hero Decorative Background -->
+<div class="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
+<div class="absolute -top-24 -left-24 w-96 h-96 bg-primary opacity-[0.08] blur-[120px] rounded-full"></div>
+<div class="absolute top-1/2 -right-24 w-80 h-80 bg-tertiary opacity-[0.05] blur-[100px] rounded-full"></div>
+</div>
+<!-- Main Container (Mobile focused 375x812 feel) -->
+<main class="w-full max-w-[375px] min-h-screen px-6 pt-20 pb-12 flex flex-col gap-10">
+<!-- Header Section -->
+<header class="flex flex-col items-center text-center gap-6">
+<div class="w-20 h-20 rounded-full flex items-center justify-center bg-surface-container-high shadow-[0_0_40px_rgba(192,193,255,0.1)] relative">
+<div class="absolute inset-0 rounded-full border border-primary/20 animate-pulse"></div>
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="shield">shield</span>
+</div>
+<div class="space-y-2">
+<h1 class="text-[24px] font-bold tracking-tight text-on-surface">Bentornato</h1>
+<p class="text-on-surface-variant font-medium">Accedi al tuo spazio</p>
+</div>
+</header>
+<!-- Login Form -->
+<section class="w-full flex flex-col gap-6">
+<div class="space-y-4">
+<!-- Email Input -->
+<div class="flex flex-col gap-2">
+<label class="text-[11px] font-medium tracking-[0.02em] uppercase text-outline pl-4">Email</label>
+<div class="relative group">
+<input class="w-full h-14 rounded-2xl bg-white/5 border-none text-on-surface focus:ring-2 focus:ring-primary/40 transition-all placeholder:text-outline/40 px-5" placeholder="nome@esempio.it" type="email"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="flex flex-col gap-2">
+<label class="text-[11px] font-medium tracking-[0.02em] uppercase text-outline pl-4">Password</label>
+<div class="relative group">
+<input class="w-full h-14 rounded-2xl bg-white/5 border-none text-on-surface focus:ring-2 focus:ring-primary/40 transition-all placeholder:text-outline/40 px-5" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full h-14 rounded-full bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold text-lg shadow-[0_8px_30px_rgba(128,131,255,0.3)] active:scale-[0.98] transition-all">
+                Accedi
+            </button>
+<!-- Register Link -->
+<div class="text-center pt-2">
+<a class="text-on-surface-variant text-sm hover:text-primary transition-colors" href="/register">
+                    Non hai ancora un account? <span class="text-primary font-semibold">Registrati</span>
+</a>
+</div>
+</section>
+<!-- Privacy Info Panel -->
+<section class="mt-auto">
+<div class="glass-card ghost-border p-6 rounded-[24px] flex gap-4 items-start">
+<div class="flex-shrink-0 mt-1">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="text-[13px] font-bold text-primary tracking-wide">SICUREZZA &amp; PRIVACY</h3>
+<p class="text-[13px] leading-relaxed text-on-surface-variant font-medium">
+                        Usiamo email e password solo per l'autenticazione. Il profilo visibile agli altri contiene soltanto pseudonimo e colore avatar.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Optional Decorative Element -->
+<div class="flex justify-center mt-4">
+<div class="w-32 h-1 rounded-full bg-surface-container-highest"></div>
+</div>
+</main>
+<!-- Background texture simulation -->
+<div class="fixed inset-0 pointer-events-none opacity-[0.03] mix-blend-overlay" data-alt="fine noise texture mimicking high quality paper or digital grain"></div>
+</body></html>

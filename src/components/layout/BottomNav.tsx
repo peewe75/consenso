@@ -8,34 +8,39 @@ const tabs = [
   { to: '/app/settings', label: 'Profilo', icon: UserRound },
 ]
 
+// ─── Stitch "Indigo Vault" BottomNav ─────────────────────────────────────────
+// Active:   text-[#C0C1FF]  bg-[#C0C1FF]/10  rounded-2xl
+// Inactive: text-[#464554]
+// Container: bg-[#131318]/90 backdrop-blur-2xl rounded-t-[30px]
+//            border-t border-[#464554]/20 shadow-[0_-10px_40px_rgba(0,0,0,0.4)]
+// ─────────────────────────────────────────────────────────────────────────────
+
 export function BottomNav() {
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-white/8 bg-background/88 px-3 pb-[calc(env(safe-area-inset-bottom)+12px)] pt-3 backdrop-blur-xl"
+      className="fixed inset-x-0 bottom-0 z-40 flex h-24 items-center justify-around rounded-t-[30px] border-t border-[#464554]/20 bg-[#131318]/90 px-4 pb-[calc(env(safe-area-inset-bottom)+8px)] shadow-[0_-10px_40px_rgba(0,0,0,0.4)] backdrop-blur-2xl"
       aria-label="Navigazione principale"
     >
-      <div className="mx-auto flex max-w-md items-center gap-2">
-        {tabs.map(({ to, label, icon: Icon }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={to === '/app'}
-            className={({ isActive }) =>
-              cn(
-                'flex min-h-12 flex-1 items-center justify-center rounded-full px-3 py-2 transition-all active:scale-[0.98]',
-                isActive ? 'bg-accent/18 text-text-primary' : 'text-text-muted',
-              )
-            }
-          >
-            {({ isActive }) => (
-              <div className="flex flex-col items-center gap-1">
-                <Icon size={20} className={isActive ? 'text-accent' : 'text-text-muted'} />
-                <span className={cn('text-[11px] font-medium', isActive && 'text-text-primary')}>{label}</span>
-              </div>
-            )}
-          </NavLink>
-        ))}
-      </div>
+      {tabs.map(({ to, label, icon: Icon }) => (
+        <NavLink
+          key={to}
+          to={to}
+          end={to === '/app'}
+          className={({ isActive }) =>
+            cn(
+              'flex flex-col items-center justify-center gap-1 rounded-2xl px-6 py-2 transition-all duration-300 active:scale-90',
+              isActive ? 'bg-[#C0C1FF]/10 text-[#C0C1FF] font-bold' : 'text-[#464554] hover:text-[#C0C1FF]',
+            )
+          }
+        >
+          {({ isActive }) => (
+            <>
+              <Icon size={22} className={isActive ? 'text-[#C0C1FF]' : 'text-[#464554]'} />
+              <span className="text-[11px] font-medium uppercase tracking-[0.02em]">{label}</span>
+            </>
+          )}
+        </NavLink>
+      ))}
     </nav>
   )
 }

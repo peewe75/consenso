@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container": "#1f1f24",
+              "on-primary": "#1000a9",
+              "on-surface": "#e4e1e9",
+              "tertiary-container": "#00885d",
+              "inverse-on-surface": "#303035",
+              "surface-bright": "#39393e",
+              "secondary-container": "#47475d",
+              "on-secondary-fixed": "#191a2e",
+              "secondary-fixed-dim": "#c6c4df",
+              "on-primary-container": "#0d0096",
+              "on-error-container": "#ffdad6",
+              "on-error": "#690005",
+              "on-tertiary-container": "#000703",
+              "surface-dim": "#131318",
+              "surface-container-low": "#1b1b20",
+              "on-background": "#e4e1e9",
+              "primary-container": "#8083ff",
+              "surface-container-high": "#2a292f",
+              "on-tertiary-fixed": "#002113",
+              "outline": "#908fa0",
+              "on-secondary-container": "#b8b6d0",
+              "tertiary-fixed": "#6ffbbe",
+              "secondary": "#c6c4df",
+              "on-tertiary-fixed-variant": "#005236",
+              "error": "#ffb4ab",
+              "inverse-surface": "#e4e1e9",
+              "on-primary-fixed-variant": "#2f2ebe",
+              "background": "#131318",
+              "inverse-primary": "#494bd6",
+              "on-secondary": "#2e2e43",
+              "surface-tint": "#c0c1ff",
+              "outline-variant": "#464554",
+              "surface-container-lowest": "#0e0e13",
+              "error-container": "#93000a",
+              "on-secondary-fixed-variant": "#45455b",
+              "on-surface-variant": "#c7c4d7",
+              "primary-fixed-dim": "#c0c1ff",
+              "surface-container-highest": "#35343a",
+              "primary-fixed": "#e1e0ff",
+              "primary": "#c0c1ff",
+              "on-tertiary": "#003824",
+              "surface-variant": "#35343a",
+              "tertiary-fixed-dim": "#4edea3",
+              "surface": "#131318",
+              "tertiary": "#4edea3",
+              "secondary-fixed": "#e2e0fc",
+              "on-primary-fixed": "#07006c"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: linear-gradient(180deg, rgba(34, 34, 58, 0.8) 0%, rgba(26, 26, 36, 0.9) 100%);
+            backdrop-filter: blur(12px);
+        }
+        .ghost-border {
+            border: 1px solid rgba(70, 69, 84, 0.2);
+        }
+        body {
+            background-color: #131318;
+            color: #e4e1e9;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex flex-col overflow-x-hidden">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 w-full z-50 bg-[#131318]/80 backdrop-blur-xl shadow-[0_4px_40px_rgba(99,102,241,0.06)] after:content-[''] after:block after:h-[1px] after:w-full after:bg-[#464554]/20 h-20 flex justify-between items-center px-6">
+<div class="text-[#C0C1FF] font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-[1.75rem]" data-icon="shield">shield</span>
+<span class="font-['Inter'] font-bold text-[1.25rem] tracking-tight">APP del Consenso</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="active:scale-95 duration-200 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-[#C0C1FF] text-[28px]" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<main class="flex-1 mt-24 px-6 pb-12 flex flex-col gap-8">
+<!-- Header Section -->
+<section class="flex flex-col gap-3">
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 bg-error-container/20 text-error rounded-full text-[11px] font-bold tracking-wider uppercase border border-error/20">
+                    In attesa
+                </span>
+</div>
+<h1 class="text-[40px] leading-[0.95] font-extrabold tracking-tight text-on-surface">
+                Sessione di consenso
+            </h1>
+</section>
+<!-- Timer Bento Card -->
+<section class="glass-card ghost-border rounded-lg p-6 flex items-center justify-between overflow-hidden relative">
+<div class="flex flex-col gap-1">
+<span class="text-label-sm uppercase tracking-[0.05em] text-outline text-[11px]">Scadenza sessione</span>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary" data-icon="schedule">schedule</span>
+<span class="text-[32px] font-mono font-bold tracking-tighter text-tertiary">04:47:22</span>
+</div>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-5">
+<span class="material-symbols-outlined text-[120px]" data-icon="timer">timer</span>
+</div>
+</section>
+<!-- Participants Section -->
+<section class="flex flex-col gap-4">
+<h2 class="text-[14px] font-bold uppercase tracking-[0.1em] text-outline px-1">Partecipanti</h2>
+<div class="flex flex-col gap-3">
+<!-- User Participant -->
+<div class="surface-container-low rounded-lg p-4 flex items-center justify-between ghost-border">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img alt="Avatar" class="w-12 h-12 rounded-full object-cover border-2 border-primary/20" data-alt="Close-up portrait of a professional man with a friendly expression against a neutral studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_m_9FO_-d0eUG2e70mLhluKY4tCi1fhxIuUoQVqxuk5VHLlutedg6Ihrxc4yue1-Xb_PzWyd0VbiQZUyqtnL6yRpdGWrVyInByi8RXArQW7NwM45vDm1MR_BKc4L_3R0M4B_ZZYFBcD5_LaxjPhJYtNMNMZOjwvWvGvJp1-WUsAyhHg0WAI2jLfjhgkOBMz6bFaOJ5fx4qyPbVoJNihzM2X_WrwsTkfG0Q_taNqidehxbMrwRJi4rnqheZPil5-np_Rx0npjc28k"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary rounded-full border-2 border-surface-container-low"></div>
+</div>
+<div>
+<p class="font-bold text-on-surface">Marco (tu)</p>
+<p class="text-xs text-outline">Organizzatore</p>
+</div>
+</div>
+<span class="text-[11px] font-bold text-primary px-3 py-1 bg-primary/10 rounded-full uppercase tracking-tighter">In attesa</span>
+</div>
+<!-- Other Participant -->
+<div class="surface-container-low rounded-lg p-4 flex items-center justify-between ghost-border">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center border-2 border-outline-variant/20">
+<span class="material-symbols-outlined text-outline" data-icon="person">person</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Valentina</p>
+<p class="text-xs text-outline">Invitato</p>
+</div>
+</div>
+<span class="text-[11px] font-bold text-outline-variant px-3 py-1 bg-surface-container-highest rounded-full uppercase tracking-tighter">Privato</span>
+</div>
+</div>
+</section>
+<!-- Action Section -->
+<section class="mt-auto glass-card ghost-border rounded-lg p-8 flex flex-col items-center gap-6 shadow-[0_20px_60px_-15px_rgba(192,193,255,0.15)]">
+<div class="text-center flex flex-col gap-2">
+<h3 class="text-xl font-bold text-on-surface">Conferma il tuo consenso</h3>
+<p class="text-sm text-outline px-4">L'operazione richiede la tua autorizzazione esplicita crittografata.</p>
+</div>
+<!-- Signature ConsentButton -->
+<div class="relative flex items-center justify-center">
+<!-- Outer Progress Ring -->
+<svg class="w-[144px] h-[144px] -rotate-90">
+<circle class="text-outline-variant/20" cx="72" cy="72" fill="transparent" r="68" stroke="currentColor" stroke-width="2"></circle>
+<!-- Path for 0% progress initial state -->
+<circle class="text-primary transition-all duration-300" cx="72" cy="72" fill="transparent" r="68" stroke="currentColor" stroke-dasharray="427" stroke-dashoffset="427" stroke-width="2.5"></circle>
+</svg>
+<!-- Inner Core -->
+<button class="absolute w-[116px] h-[116px] rounded-full bg-surface-bright/40 backdrop-blur-md flex items-center justify-center border border-white/10 active:scale-95 transition-transform shadow-lg group">
+<div class="w-full h-full rounded-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-transparent">
+<span class="material-symbols-outlined text-[48px] text-primary" data-icon="shield_person" style="font-variation-settings: 'FILL' 0;">shield_person</span>
+</div>
+</button>
+</div>
+<p class="text-[12px] font-medium text-primary text-center tracking-wide flex flex-col gap-1">
+<span>Tieni premuto 600 ms per confermare</span>
+<span class="opacity-40 text-[10px] uppercase">Rilascio biometrico richiesto</span>
+</p>
+</section>
+</main>
+<!-- Overlay Gradient for Depth -->
+<div class="fixed bottom-0 left-0 w-full h-[265px] bg-gradient-to-t from-primary/5 to-transparent pointer-events-none -z-10"></div>
+<div class="fixed top-0 right-0 w-[50vw] h-[442px] bg-primary/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+</body></html>
