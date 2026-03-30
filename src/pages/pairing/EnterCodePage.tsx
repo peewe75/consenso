@@ -5,9 +5,6 @@ import { buildIntegrityHash } from '@/lib/crypto'
 import { supabase } from '@/lib/supabase'
 import { padCode } from '@/lib/utils'
 import { useAuthStore } from '@/stores/authStore'
-import type { Database } from '@/types/database'
-
-type PairingCodeRow = Database['public']['Tables']['pairing_codes']['Row']
 
 export function EnterCodePage() {
   const navigate = useNavigate()
@@ -63,28 +60,11 @@ export function EnterCodePage() {
     setError(null)
 
     try {
-      const { data: pairingCode, error: codeError } = await supabase
-        .from('pairing_codes')
-        .select('*')
-        .eq('code', code)
-        .is('used_at', null)
-        .single()
-
-      if (codeError || !pairingCode) {
-        throw new Error('Codice non valido o scaduto')
-      }
-
-      const validPairing = pairingCode as PairingCodeRow
-
-      if (validPairing.creator_id === user.id) {
-        throw new Error('Non puoi usare il tuo stesso codice')
-      }
-
       const initiatedAt = new Date().toISOString()
-      const integrityHash = await buildIntegrityHash([user.id, validPairing.creator_id], initiatedAt)
+      const integrityHash = await buildIntegrityHash([user.id, code], initiatedAt)
 
-      const { data: sessionId, error: sessionError } = await supabase.rpc('create_consent_session', {
-        p_participant_ids: [user.id, validPairing.creator_id],
+      const { data: sessionId, error: sessionError } = await supabase.rpc('create_session_from_pairing_code', {
+        p_code: code,
         p_integrity_hash: integrityHash,
       })
 
@@ -92,7 +72,6 @@ export function EnterCodePage() {
         throw sessionError ?? new Error('Impossibile creare la sessione')
       }
 
-      await supabase.from('pairing_codes').update({ used_at: new Date().toISOString() }).eq('id', validPairing.id)
       navigate(`/session/${sessionId}`)
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Errore durante il pairing')
@@ -116,7 +95,7 @@ export function EnterCodePage() {
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <div onPaste={handlePaste} className="panel rounded-[28px] px-4 py-6">
-          <div className="flex justify-between gap-2">
+          <div className="mx-auto flex w-fit max-w-full justify-center gap-2 sm:gap-3">
             {digits.map((digit, index) => (
               <input
                 key={index}
@@ -130,7 +109,7 @@ export function EnterCodePage() {
                 value={digit}
                 onChange={(event) => handleChange(index, event.target.value)}
                 onKeyDown={(event) => handleKeyDown(index, event)}
-                className="h-16 w-12 rounded-2xl border border-white/10 bg-white/4 text-center text-2xl font-bold text-text-primary outline-none transition focus:border-accent focus:bg-white/[0.08]"
+                className="h-16 w-10 rounded-2xl border border-white/10 bg-white/4 text-center text-2xl font-bold text-text-primary outline-none transition focus:border-accent focus:bg-white/[0.08] sm:w-12"
               />
             ))}
           </div>

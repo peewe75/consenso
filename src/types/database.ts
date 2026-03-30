@@ -142,6 +142,10 @@ export interface Database {
         Args: { p_participant_ids: string[]; p_integrity_hash?: string }
         Returns: string
       }
+      create_session_from_pairing_code: {
+        Args: { p_code: string; p_integrity_hash?: string }
+        Returns: string
+      }
       record_consent_action: {
         Args: { p_session_id: string; p_action: string; p_action_hash?: string }
         Returns: undefined

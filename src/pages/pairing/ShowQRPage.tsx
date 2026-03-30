@@ -36,11 +36,16 @@ export function ShowQRPage() {
 
     const expiry = new Date(Date.now() + CODE_LIFETIME_SECONDS * 1000).toISOString()
 
-    await supabase.from('pairing_codes').insert({
+    const { error: insertError } = await supabase.from('pairing_codes').insert({
       creator_id: user.id,
       code: freshCode,
       expires_at: expiry,
     })
+
+    if (insertError) {
+      setLoading(false)
+      return
+    }
 
     setCode(freshCode)
     setExpiresAt(expiry)

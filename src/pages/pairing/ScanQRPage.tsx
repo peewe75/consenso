@@ -7,9 +7,6 @@ import { supabase } from '@/lib/supabase'
 import { initialsFromName } from '@/lib/utils'
 import { useAuthStore } from '@/stores/authStore'
 import { useSessionStore } from '@/stores/sessionStore'
-import type { Database } from '@/types/database'
-
-type PairingCodeRow = Database['public']['Tables']['pairing_codes']['Row']
 
 const qrSchema = z.object({
   c: z.string().regex(/^\d{6}$/),
@@ -84,36 +81,17 @@ export function ScanQRPage() {
     setError(null)
 
     try {
-      const { data: pairingCode, error: codeError } = await supabase
-        .from('pairing_codes')
-        .select('*')
-        .eq('code', payload.c)
-        .is('used_at', null)
-        .single()
-
-      if (codeError || !pairingCode) {
-        throw new Error('QR scaduto o gia usato')
-      }
-
-      const validPairing = pairingCode as PairingCodeRow
-
-      if (validPairing.creator_id === user.id) {
-        throw new Error('Non puoi creare una sessione con il tuo stesso codice')
-      }
-
       const initiatedAt = new Date().toISOString()
-      const integrityHash = await buildIntegrityHash([user.id, payload.u], initiatedAt)
+      const integrityHash = await buildIntegrityHash([user.id, payload.c], initiatedAt)
 
-      const { data: sessionId, error: sessionError } = await supabase.rpc('create_consent_session', {
-        p_participant_ids: [user.id, payload.u],
+      const { data: sessionId, error: sessionError } = await supabase.rpc('create_session_from_pairing_code', {
+        p_code: payload.c,
         p_integrity_hash: integrityHash,
       })
 
       if (sessionError || !sessionId) {
         throw sessionError ?? new Error('Impossibile creare la sessione')
       }
-
-      await supabase.from('pairing_codes').update({ used_at: new Date().toISOString() }).eq('id', validPairing.id)
 
       setPairedUser(payload.u, {
         id: payload.u,

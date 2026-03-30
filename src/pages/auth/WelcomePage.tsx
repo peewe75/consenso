@@ -58,6 +58,7 @@ export function WelcomePage() {
   }
 
   const showIosHint = isIosSafariInstallPromptVisible()
+  const androidApkLink = downloadLinks.find((item) => item.label === 'APK diretto')?.href ?? null
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#131318] text-[#E4E1E9]">
@@ -235,6 +236,80 @@ export function WelcomePage() {
               </div>
             ))}
           </div>
+
+          {androidApkLink ? (
+            <div className="mt-6 rounded-[28px] border border-[#C0C1FF]/20 bg-[linear-gradient(180deg,rgba(192,193,255,0.12),rgba(27,27,32,0.96))] p-8">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="max-w-2xl space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#C0C1FF]/12">
+                      <Smartphone size={20} className="text-[#C0C1FF]" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#908FA0]">Android APK</p>
+                      <h3 className="text-2xl font-bold text-[#E4E1E9]">Installazione come vera app Android</h3>
+                    </div>
+                  </div>
+                  <p className="text-sm leading-6 text-[#C7C4D7]">
+                    Se scegli l&apos;APK diretto, l&apos;app viene installata come normale app Android. Non e un semplice collegamento:
+                    compare tra le app del telefono e si puo aprire o disinstallare come qualsiasi altra app.
+                  </p>
+                </div>
+
+                {androidApkLink.startsWith('/') ? (
+                  <Link
+                    to={androidApkLink}
+                    className="flex min-h-12 items-center justify-center rounded-full bg-gradient-to-b from-[#C0C1FF] to-[#8083FF] px-6 text-sm font-bold text-[#1000A9] transition-all hover:opacity-90 active:scale-[0.98]"
+                  >
+                    Scarica APK
+                  </Link>
+                ) : (
+                  <a
+                    href={androidApkLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex min-h-12 items-center justify-center rounded-full bg-gradient-to-b from-[#C0C1FF] to-[#8083FF] px-6 text-sm font-bold text-[#1000A9] transition-all hover:opacity-90 active:scale-[0.98]"
+                  >
+                    Scarica APK
+                  </a>
+                )}
+              </div>
+
+              <div className="mt-6 grid gap-4 lg:grid-cols-2">
+                <div className="rounded-[24px] border border-white/8 bg-black/15 p-5">
+                  <p className="text-sm font-semibold text-[#E4E1E9]">Come installarla</p>
+                  <ol className="mt-4 space-y-3 text-sm leading-6 text-[#C7C4D7]">
+                    <li className="flex gap-3">
+                      <span className="font-bold text-[#C0C1FF]">01.</span>
+                      Apri il link dell&apos;APK dal tuo smartphone Android e scarica il file.
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-[#C0C1FF]">02.</span>
+                      Tocca il file scaricato: Android mostrera un avviso di sicurezza.
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-[#C0C1FF]">03.</span>
+                      Consenti l&apos;installazione per il browser o per l&apos;app File, di solito con la voce{' '}
+                      <span className="font-semibold text-[#E4E1E9]">Consenti da questa sorgente</span>.
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-[#C0C1FF]">04.</span>
+                      Torna indietro e conferma <span className="font-semibold text-[#E4E1E9]">Installa</span>.
+                    </li>
+                  </ol>
+                </div>
+
+                <div className="rounded-[24px] border border-white/8 bg-black/15 p-5">
+                  <p className="text-sm font-semibold text-[#E4E1E9]">Cosa vedra l&apos;utente</p>
+                  <ul className="mt-4 space-y-3 text-sm leading-6 text-[#C7C4D7]">
+                    <li>Su Samsung e Huawei il sistema puo chiedere l&apos;autorizzazione solo la prima volta.</li>
+                    <li>Dopo l&apos;installazione l&apos;app appare nella schermata app del telefono con la sua icona.</li>
+                    <li>Da quel momento si apre come app Android normale, senza passare dal browser.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ) : null}
 
           {showIosHint ? (
             <div className="mt-6 rounded-[28px] border border-[#C0C1FF]/20 bg-[#C0C1FF]/10 px-5 py-5">

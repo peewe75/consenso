@@ -7,6 +7,7 @@ interface ConsentButtonProps {
   onAction: () => Promise<void>
   disabled?: boolean
   label?: string
+  size?: 'default' | 'compact'
 }
 
 // ─── Stitch "Indigo Vault" ConsentButton ──────────────────────────────────────
@@ -21,12 +22,19 @@ const HOLD_DURATION = 600
 const RADIUS = 68
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS   // ≈ 427.26
 
-export function ConsentButton({ mode, onAction, disabled, label }: ConsentButtonProps) {
+export function ConsentButton({
+  mode,
+  onAction,
+  disabled,
+  label,
+  size = 'default',
+}: ConsentButtonProps) {
   const [progress, setProgress] = useState(0)
   const [acting, setActing] = useState(false)
   const intervalRef = useRef<number | null>(null)
   const startedAtRef = useRef<number | null>(null)
   const completedRef = useRef(false)
+  const compact = size === 'compact'
 
   const palette = useMemo(
     () =>
@@ -93,6 +101,10 @@ export function ConsentButton({ mode, onAction, disabled, label }: ConsentButton
 
   const dashOffset = CIRCUMFERENCE * (1 - progress)
   const Icon = palette.icon
+  const frameClasses = compact ? 'h-28 w-28' : 'h-36 w-36'
+  const innerClasses = compact ? 'h-[5.5rem] w-[5.5rem]' : 'h-28 w-28'
+  const iconSize = compact ? 32 : 40
+  const helperClasses = compact ? 'max-w-[11rem] text-xs leading-4' : 'max-w-[15rem] text-sm leading-5'
 
   return (
     <div className="flex select-none flex-col items-center gap-4 text-center">
@@ -104,7 +116,8 @@ export function ConsentButton({ mode, onAction, disabled, label }: ConsentButton
         onPointerLeave={cancelPress}
         onPointerCancel={cancelPress}
         className={cn(
-          'relative flex h-36 w-36 items-center justify-center rounded-full transition duration-150 active:scale-[0.97] disabled:opacity-45',
+          'relative flex items-center justify-center rounded-full transition duration-150 active:scale-[0.97] disabled:opacity-45',
+          frameClasses,
           acting && 'pointer-events-none',
         )}
         aria-label={
@@ -112,12 +125,12 @@ export function ConsentButton({ mode, onAction, disabled, label }: ConsentButton
             ? 'Tieni premuto per confermare il consenso'
             : 'Tieni premuto per revocare il consenso'
         }
-      >
+        >
         {/* SVG ring */}
         <svg
           className="absolute inset-0"
-          width="144"
-          height="144"
+          width={compact ? '112' : '144'}
+          height={compact ? '112' : '144'}
           viewBox="0 0 144 144"
           aria-hidden="true"
         >
@@ -148,7 +161,7 @@ export function ConsentButton({ mode, onAction, disabled, label }: ConsentButton
 
         {/* Inner circle */}
         <div
-          className="relative z-10 flex h-28 w-28 items-center justify-center rounded-full"
+          className={cn('relative z-10 flex items-center justify-center rounded-full', innerClasses)}
           style={{
             background: acting
               ? 'linear-gradient(135deg, #4EDEA3 0%, #00885D 100%)'
@@ -157,14 +170,14 @@ export function ConsentButton({ mode, onAction, disabled, label }: ConsentButton
           }}
         >
           {acting ? (
-            <LoaderCircle className="animate-spin" size={40} color="#003824" />
+            <LoaderCircle className="animate-spin" size={iconSize} color="#003824" />
           ) : (
-            <Icon size={40} color={palette.iconColor} />
+            <Icon size={iconSize} color={palette.iconColor} />
           )}
         </div>
       </button>
 
-      <p className="max-w-[15rem] text-sm font-medium leading-5 text-[#C7C4D7]">
+      <p className={cn('font-medium text-[#C7C4D7]', helperClasses)}>
         {acting ? 'Elaborazione in corso...' : (label ?? palette.fallbackLabel)}
       </p>
     </div>

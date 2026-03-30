@@ -69,7 +69,12 @@ export function SessionPage() {
   }
 
   return (
-    <main className="safe-page-tight space-y-6 bg-[#131318]">
+    <main
+      className="safe-page-tight space-y-6 bg-[#131318]"
+      style={{
+        paddingBottom: canInteract ? 'calc(env(safe-area-inset-bottom) + 220px)' : undefined,
+      }}
+    >
       {/* Ambient glow */}
       <div className="pointer-events-none fixed right-0 top-0 h-[44vh] w-1/2 rounded-full bg-[#C0C1FF]/5 blur-[120px]" />
       <div className="pointer-events-none fixed bottom-0 left-0 h-[26vh] w-full bg-gradient-to-t from-[#C0C1FF]/5 to-transparent" />
@@ -183,7 +188,7 @@ export function SessionPage() {
       {/* ── Action / Final state ─────────────────────────────────────────── */}
       {canInteract ? (
         <section
-          className="flex flex-col items-center gap-6 rounded-[28px] border border-[#464554]/20 px-5 py-8 shadow-[0_20px_60px_-15px_rgba(192,193,255,0.15)]"
+          className="hidden flex-col items-center gap-6 rounded-[28px] border border-[#464554]/20 px-5 py-8 shadow-[0_20px_60px_-15px_rgba(192,193,255,0.15)] md:flex"
           style={glassCard}
         >
           <div className="space-y-2 text-center">
@@ -238,6 +243,54 @@ export function SessionPage() {
       )}
 
       {/* ── Revoke bottom sheet ──────────────────────────────────────────── */}
+      {canInteract ? (
+        <section className="fixed inset-x-0 bottom-0 z-40 px-[calc(env(safe-area-inset-left)+16px)] pb-[calc(env(safe-area-inset-bottom)+16px)] pr-[calc(env(safe-area-inset-right)+16px)] md:hidden">
+          <div
+            className="rounded-[28px] border border-[#464554]/20 px-4 py-4 shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.6)]"
+            style={{
+              ...glassCard,
+              background:
+                'linear-gradient(180deg, rgba(34,34,58,0.96) 0%, rgba(26,26,36,0.98) 100%)',
+            }}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#908FA0]">
+                  Azione rapida
+                </p>
+                <h2 className="mt-1 text-base font-bold text-[#E4E1E9]">
+                  {session.myStatus === 'confirmed'
+                    ? 'Consenso registrato'
+                    : 'Tieni premuto per confermare'}
+                </h2>
+                <p className="mt-1 text-xs leading-5 text-[#908FA0]">
+                  {session.myStatus === 'confirmed'
+                    ? 'Puoi ancora aprire la revoca finche la sessione resta attiva.'
+                    : 'La CTA resta visibile qui in basso per un uso rapido su smartphone.'}
+                </p>
+              </div>
+
+              {session.myStatus !== 'confirmed' ? (
+                <ConsentButton
+                  mode="confirm"
+                  onAction={confirmConsent}
+                  size="compact"
+                  label="Premi 600 ms"
+                />
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowRevokeSheet(true)}
+                  className="flex min-h-12 shrink-0 items-center justify-center rounded-full border border-[#93000A]/30 bg-[#93000A]/10 px-5 text-sm font-semibold text-[#FFB4AB] transition active:scale-[0.98]"
+                >
+                  Apri revoca
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       <AnimatePresence>
         {showRevokeSheet ? (
           <motion.div
