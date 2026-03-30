@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competitive Intelligence Report | APP del Consenso</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+        
+        <!-- Header -->
+        <header class="bg-slate-900 text-white p-6 md:p-10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mt-10 -mr-10 text-slate-800 opacity-20">
+                <i data-lucide="radar" class="w-64 h-64"></i>
+            </div>
+            <div class="relative z-10">
+                <div class="flex items-center gap-3 mb-2">
+                    <i data-lucide="bar-chart-2" class="w-8 h-8 text-indigo-400"></i>
+                    <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Competitive Intelligence</h1>
+                </div>
+                <p class="text-slate-400 text-lg flex items-center gap-2">
+                    <i data-lucide="target" class="w-5 h-5"></i> Target: <span class="text-white font-medium">APP del Consenso</span>
+                </p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="p-6 md:p-10 space-y-8">
+
+            <!-- Overview Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-center">
+                    <p class="text-sm text-slate-500 font-medium mb-1 uppercase tracking-wider">Progetto Analizzato</p>
+                    <a href="https://app-del-consenso-git.netlify.app/" target="_blank" class="text-indigo-600 font-semibold flex items-center gap-1 hover:underline break-all">
+                        app-del-consenso-git.netlify.app
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                    </a>
+                </div>
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col justify-center">
+                    <p class="text-sm text-slate-500 font-medium mb-1 uppercase tracking-wider">Concorrenti</p>
+                    <p class="text-2xl font-bold text-slate-800 flex items-baseline gap-2">
+                        5 <span class="text-sm font-normal text-slate-500">(3 diretti, 2 indiretti)</span>
+                    </p>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-5 flex flex-col justify-center">
+                    <p class="text-sm text-emerald-600 font-medium mb-1 uppercase tracking-wider">Posizione Competitiva</p>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-emerald-500 text-white text-sm font-bold px-3 py-1 rounded-full shadow-sm">FORTE</span>
+                        <p class="text-sm text-emerald-800 font-medium leading-tight">Mercato italiano praticamente vuoto</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Due Colonne: Panorama & Findings -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Panorama Competitivo -->
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2 border-b pb-2">
+                        <i data-lucide="users" class="w-5 h-5 text-slate-500"></i> Panorama Competitivo
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <!-- Diretti -->
+                        <div class="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+                            <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-3">Concorrenti Diretti</h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-center justify-between">
+                                    <span class="font-medium">WeConsent</span>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-md bg-amber-100 text-amber-800 border border-amber-200">Waitlist / Beta</span>
+                                </li>
+                                <li class="flex items-center justify-between">
+                                    <span class="font-medium">Consensual App</span>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">Attiva</span>
+                                </li>
+                                <li class="flex items-center justify-between">
+                                    <span class="font-medium text-slate-400 line-through">LegalFling</span>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-md bg-rose-100 text-rose-800 border border-rose-200">Defunta</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Indiretti & Aspirazionali -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+                                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Indiretti</h3>
+                                <ul class="text-sm space-y-2">
+                                    <li class="flex items-center gap-2 text-slate-600">
+                                        <i data-lucide="x-circle" class="w-4 h-4 text-rose-400"></i> Good2Go <span class="text-xs text-slate-400">(2014)</span>
+                                    </li>
+                                    <li class="flex items-center gap-2 text-slate-600">
+                                        <i data-lucide="pause-circle" class="w-4 h-4 text-slate-400"></i> SaSie / We-Consent
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 shadow-sm flex flex-col justify-center text-center">
+                                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Aspirazionale</h3>
+                                <p class="text-sm font-medium text-slate-700">Nessun leader consolidato</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Findings & Posizionamento -->
+                <div class="space-y-8">
+                    
+                    <!-- Findings Chiave -->
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2 border-b pb-2">
+                            <i data-lucide="key" class="w-5 h-5 text-slate-500"></i> Findings Chiave
+                        </h2>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3 bg-white border border-slate-200 p-3 rounded-lg shadow-sm">
+                                <div class="bg-indigo-100 p-2 rounded-md shrink-0"><i data-lucide="award" class="w-5 h-5 text-indigo-600"></i></div>
+                                <div>
+                                    <span class="block font-bold text-sm text-slate-900">Vantaggio Principale</span>
+                                    <span class="text-sm text-slate-600">Unica app italiana + revoca realtime + privacy radicale + PWA</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-white border border-slate-200 p-3 rounded-lg shadow-sm">
+                                <div class="bg-rose-100 p-2 rounded-md shrink-0"><i data-lucide="alert-triangle" class="w-5 h-5 text-rose-600"></i></div>
+                                <div>
+                                    <span class="block font-bold text-sm text-slate-900">Minaccia Principale</span>
+                                    <span class="text-sm text-slate-600">Lancio WeConsent (attualmente in waitlist, ben finanziata)</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 bg-white border border-slate-200 p-3 rounded-lg shadow-sm">
+                                <div class="bg-amber-100 p-2 rounded-md shrink-0"><i data-lucide="zap" class="w-5 h-5 text-amber-600"></i></div>
+                                <div>
+                                    <span class="block font-bold text-sm text-slate-900">Opportunità Principale</span>
+                                    <span class="text-sm text-slate-600">Riforma legge italiana sul consenso (Senato) — tailwind mediatico unico</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Posizionamento di mercato -->
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2 border-b pb-2">
+                            <i data-lucide="crosshair" class="w-5 h-5 text-slate-500"></i> Posizionamento
+                        </h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="bg-white border-l-4 border-indigo-500 p-3 rounded-r-lg shadow-sm">
+                                <p class="text-xs text-slate-500 font-bold uppercase mb-1">Feature Gap</p>
+                                <p class="font-semibold text-slate-800"><span class="text-indigo-600 text-lg">0</span> mancanti</p>
+                            </div>
+                            <div class="bg-white border-l-4 border-emerald-500 p-3 rounded-r-lg shadow-sm">
+                                <p class="text-xs text-slate-500 font-bold uppercase mb-1">Content Gap</p>
+                                <p class="font-semibold text-slate-800"><span class="text-emerald-600 text-lg">3</span> keyword IT</p>
+                            </div>
+                            <div class="bg-white border-l-4 border-blue-500 p-3 rounded-r-lg shadow-sm">
+                                <p class="text-xs text-slate-500 font-bold uppercase mb-1">Pricing</p>
+                                <p class="font-semibold text-slate-800 text-sm">Gratuita + No ID</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Top 3 Azioni -->
+            <div class="mt-10 bg-gradient-to-br from-indigo-900 to-slate-900 rounded-2xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute -right-6 -top-6 opacity-10">
+                    <i data-lucide="check-circle" class="w-48 h-48"></i>
+                </div>
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 relative z-10">
+                    <i data-lucide="rocket" class="w-6 h-6 text-indigo-400"></i> Top 3 Azioni Immediate
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
+                    
+                    <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-5 hover:bg-white/20 transition duration-200">
+                        <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-xl font-bold mb-4 shadow-lg">1</div>
+                        <p class="font-medium leading-relaxed">Preparare comunicato stampa da lanciare il <span class="text-indigo-300 font-bold">giorno del voto finale</span> al Senato.</p>
+                    </div>
+                    
+                    <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-5 hover:bg-white/20 transition duration-200">
+                        <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-xl font-bold mb-4 shadow-lg">2</div>
+                        <p class="font-medium leading-relaxed">Creare landing page comparativa <code class="bg-slate-800 px-2 py-1 rounded text-sm text-indigo-200 mt-1 inline-block">/vs/weconsent</code> per il traffico.</p>
+                    </div>
+                    
+                    <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-5 hover:bg-white/20 transition duration-200">
+                        <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-xl font-bold mb-4 shadow-lg">3</div>
+                        <p class="font-medium leading-relaxed">Contattare le associazioni antiviolenza italiane per ottenere un <span class="text-indigo-300 font-bold">endorsement ufficiale</span>.</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- Footer -->
+        <div class="bg-slate-50 p-4 border-t border-slate-200 text-center text-sm text-slate-500 flex flex-col md:flex-row justify-between items-center gap-2">
+            <div class="flex items-center gap-1">
+                <i data-lucide="file-text" class="w-4 h-4"></i> Salvato in: <code class="bg-slate-200 px-1.5 py-0.5 rounded text-slate-700">COMPETITOR-REPORT.md</code>
+            </div>
+            <div class="flex items-center gap-1 font-medium">
+                Generato per il nostro team <i data-lucide="users" class="w-4 h-4 ml-1"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

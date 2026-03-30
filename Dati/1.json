@@ -1,0 +1,329 @@
+{
+  "project": "APP del Consenso landing",
+  "design_intent": {
+    "style": "premium, warm, reassuring, editorial, human-centered, mobile-first",
+    "palette_reference": {
+      "bg": "#F7F4EE",
+      "surface": "#FBF8F3",
+      "surface2": "#EFE8DE",
+      "text": "#25211C",
+      "textMuted": "#6F6A63",
+      "border": "#DDD4C8",
+      "primary": "#1E6B68",
+      "primaryHover": "#16514F",
+      "primarySoft": "#DCE9E5"
+    }
+  },
+  "assets": [
+    {
+      "file_id": "file:46",
+      "filename": "Gemini_Generated_Image_t6icv1t6icv1t6ic.jpg",
+      "role": "hero_primary_mockup",
+      "section": "HeroSection",
+      "priority": "critical",
+      "use": true,
+      "desktop_position": "right_column",
+      "mobile_position": "below_cta_and_trust_pills",
+      "recommended_render": {
+        "container_ratio": "4:5",
+        "object_fit": "contain",
+        "max_width_desktop_px": 560,
+        "max_width_mobile_px": 420,
+        "loading": "eager",
+        "fetch_priority": "high",
+        "rounded": true,
+        "shadow": "soft",
+        "animation": "subtle_float"
+      },
+      "alt_text": "Mockup smartphone dell’app APP del Consenso con interfaccia mobile chiara, privata e rassicurante",
+      "notes": [
+        "È il visual più importante della landing.",
+        "Non ritagliare aggressivamente il device.",
+        "Mantieni leggibile la UI sullo schermo.",
+        "Usare come immagine principale di conversione nel hero."
+      ]
+    },
+    {
+      "file_id": "file:48",
+      "filename": "Gemini_Generated_Image_r5yofr5yofr5yofr.jpg",
+      "role": "what_is_primary_editorial",
+      "section": "WhatIsSection",
+      "priority": "high",
+      "use": true,
+      "desktop_position": "right_of_text",
+      "mobile_position": "below_text",
+      "recommended_render": {
+        "container_ratio": "4:3",
+        "object_fit": "cover",
+        "max_width_desktop_px": 620,
+        "max_width_mobile_px": 1000,
+        "loading": "lazy",
+        "rounded": true,
+        "shadow": "very_soft",
+        "animation": "fade_up"
+      },
+      "alt_text": "Illustrazione editoriale di due adulti che conversano in modo calmo e rispettoso in un ambiente riservato",
+      "notes": [
+        "Scelta consigliata per la sezione 'Che cos’è'.",
+        "Tono più caldo e naturale rispetto alle alternative.",
+        "Non usare nel hero.",
+        "Serve a umanizzare il prodotto."
+      ]
+    },
+    {
+      "file_id": "file:45",
+      "filename": "Gemini_Generated_Image_ivl7q9ivl7q9ivl7.jpg",
+      "role": "what_is_alternative_editorial_a",
+      "section": "WhatIsSection",
+      "priority": "medium",
+      "use": "fallback",
+      "desktop_position": "right_of_text",
+      "mobile_position": "below_text",
+      "recommended_render": {
+        "container_ratio": "4:3",
+        "object_fit": "cover",
+        "loading": "lazy",
+        "rounded": true,
+        "shadow": "very_soft"
+      },
+      "alt_text": "Illustrazione editoriale di due adulti che conversano in modo calmo e rispettoso in un ambiente riservato",
+      "notes": [
+        "Alternativa più formale per la sezione 'Che cos’è'.",
+        "Usare solo se file:48 non si integra bene con il copy o il layout."
+      ]
+    },
+    {
+      "file_id": "file:53",
+      "filename": "Gemini_Generated_Image_how887how887how8.jpg",
+      "role": "what_is_alternative_editorial_b",
+      "section": "WhatIsSection",
+      "priority": "medium",
+      "use": "fallback",
+      "desktop_position": "right_of_text",
+      "mobile_position": "below_text",
+      "recommended_render": {
+        "container_ratio": "4:3",
+        "object_fit": "cover",
+        "loading": "lazy",
+        "rounded": true,
+        "shadow": "very_soft"
+      },
+      "alt_text": "Illustrazione editoriale di due adulti che conversano in modo calmo e rispettoso in un ambiente riservato",
+      "notes": [
+        "Simile a file:45, usarla come seconda alternativa.",
+        "Non duplicare più immagini di dialogo in sezioni consecutive."
+      ]
+    },
+    {
+      "file_id": "file:47",
+      "filename": "Gemini_Generated_Image_tz3ztitz3ztitz3z.jpg",
+      "role": "clarity_abstract_visual",
+      "section": "WhyClaritySection",
+      "priority": "low",
+      "use": "optional",
+      "desktop_position": "above_cards_or_aside_text",
+      "mobile_position": "top_of_section_if_space_allows",
+      "recommended_render": {
+        "container_ratio": "16:10",
+        "object_fit": "contain",
+        "max_width_desktop_px": 900,
+        "loading": "lazy",
+        "rounded": false,
+        "shadow": "none",
+        "animation": "fade_up"
+      },
+      "alt_text": "Visual editoriale astratto che rappresenta chiarezza, allineamento e comprensione reciproca",
+      "notes": [
+        "Prima immagine sacrificabile se la pagina diventa troppo piena.",
+        "Usarla solo se il layout ha molto respiro.",
+        "È più concettuale che funzionale."
+      ]
+    },
+    {
+      "file_id": "file:52",
+      "filename": "Gemini_Generated_Image_jn1j88jn1j88jn1j.jpg",
+      "role": "how_it_works_primary_flow",
+      "section": "HowItWorksSection",
+      "priority": "critical",
+      "use": true,
+      "desktop_position": "full_width_above_steps",
+      "mobile_position": "above_vertical_timeline",
+      "recommended_render": {
+        "container_ratio": "natural",
+        "object_fit": "contain",
+        "max_width_desktop_px": 1200,
+        "max_width_mobile_px": 1000,
+        "loading": "lazy",
+        "rounded": true,
+        "shadow": "soft",
+        "animation": "fade_up"
+      },
+      "alt_text": "Schema visivo del funzionamento dell’app con accesso, pairing in presenza, conferma reciproca e controllo con revoca",
+      "notes": [
+        "Molto importante perché spiega il prodotto in pochi secondi.",
+        "Non ritagliare i testi o i numeri interni.",
+        "Su desktop può essere il cuore della sezione."
+      ]
+    },
+    {
+      "file_id": "file:51",
+      "filename": "Gemini_Generated_Image_mqz8uamqz8uamqz8.jpg",
+      "role": "privacy_primary_visual",
+      "section": "PrivacyTrustSection",
+      "priority": "critical",
+      "use": true,
+      "desktop_position": "right_column",
+      "mobile_position": "between_heading_and_bullets_or_below_bullets",
+      "recommended_render": {
+        "container_ratio": "4:3",
+        "object_fit": "contain",
+        "max_width_desktop_px": 620,
+        "max_width_mobile_px": 1000,
+        "loading": "lazy",
+        "rounded": true,
+        "shadow": "very_soft",
+        "animation": "fade_up"
+      },
+      "alt_text": "Visual astratto che rappresenta privacy, minimizzazione dei dati, controllo condiviso e design riservato",
+      "notes": [
+        "Ottimo asset per la sezione privacy.",
+        "Contiene testo inglese visibile: evitare duplicazione speculare del copy nello stesso punto.",
+        "Se il testo integrato stona, usarla lateralmente e non come hero della sezione."
+      ]
+    },
+    {
+      "file_id": "file:49",
+      "filename": "Gemini_Generated_Image_2lt3c52lt3c52lt3.jpg",
+      "role": "audience_editorial_visual",
+      "section": "AudienceSection",
+      "priority": "medium",
+      "use": "desktop_preferred_mobile_optional",
+      "desktop_position": "above_cards_or_left_of_grid",
+      "mobile_position": "omit_if_section_becomes_too_long",
+      "recommended_render": {
+        "container_ratio": "panoramic",
+        "object_fit": "cover",
+        "max_width_desktop_px": 1100,
+        "loading": "lazy",
+        "rounded": true,
+        "shadow": "none",
+        "animation": "fade_up"
+      },
+      "alt_text": "Illustrazione editoriale che rappresenta diversi contesti di comunicazione rispettosa tra adulti",
+      "notes": [
+        "Utile per mostrare pluralità dei casi d’uso.",
+        "Non essenziale su mobile.",
+        "Non usare se la sezione audience funziona già bene solo con le tre card."
+      ]
+    },
+    {
+      "file_id": "file:50",
+      "filename": "Gemini_Generated_Image_3ji1943ji1943ji1.jpg",
+      "role": "vision_primary_visual",
+      "section": "VisionSection",
+      "priority": "high",
+      "use": true,
+      "desktop_position": "right_of_manifesto",
+      "mobile_position": "between_vision_and_final_cta",
+      "recommended_render": {
+        "container_ratio": "4:3",
+        "object_fit": "cover",
+        "max_width_desktop_px": 620,
+        "max_width_mobile_px": 1000,
+        "loading": "lazy",
+        "rounded": true,
+        "shadow": "very_soft",
+        "animation": "fade_up"
+      },
+      "alt_text": "Visual editoriale simbolica che rappresenta chiarezza, rispetto e fiducia come percorso condiviso",
+      "notes": [
+        "Molto adatta per alzare il tono della parte finale della landing.",
+        "Ottima come ponte verso la CTA finale.",
+        "Non usarla nel hero."
+      ]
+    },
+    {
+      "file_id": "file:44",
+      "filename": "Gemini_Generated_Image_how887how887how8.jpg",
+      "role": "duplicate_editorial_dialogue_reference",
+      "section": "WhatIsSection",
+      "priority": "low",
+      "use": "fallback_only",
+      "desktop_position": "right_of_text",
+      "mobile_position": "below_text",
+      "recommended_render": {
+        "container_ratio": "4:3",
+        "object_fit": "cover",
+        "loading": "lazy"
+      },
+      "alt_text": "Illustrazione editoriale di due adulti che conversano in modo calmo e rispettoso in un ambiente riservato",
+      "notes": [
+        "Duplicato funzionale di file:53.",
+        "Tenere come riserva, non usare insieme a file:53."
+      ]
+    }
+  ],
+  "icon_sheet": {
+    "file_id": "file:52",
+    "filename": "Gemini_Generated_Image_jn1j88jn1j88jn1j.jpg",
+    "status": "do_not_use_as_icon_sheet",
+    "notes": [
+      "Il file:52 è il flow 'Come funziona', non il set icone."
+    ]
+  },
+  "principles_icons": {
+    "source_status": "attached_but_unmapped_by_id_from_current list",
+    "recommended_usage": "If the separate square 2x2 icon board is available in the working files, slice it into 4 standalone icons and use them inside the four principle cards.",
+    "do_not": [
+      "Non mostrare la tavola 2x2 intera come poster grande nella landing."
+    ],
+    "icon_targets": [
+      {
+        "principle": "Chiarezza",
+        "alt_text": "Icona editoriale che rappresenta chiarezza e comunicazione trasparente"
+      },
+      {
+        "principle": "Reciprocità",
+        "alt_text": "Icona editoriale che rappresenta accordo reciproco e partecipazione condivisa"
+      },
+      {
+        "principle": "Revoca continua",
+        "alt_text": "Icona editoriale che rappresenta controllo continuo e possibilità di revoca"
+      },
+      {
+        "principle": "Riservatezza",
+        "alt_text": "Icona editoriale che rappresenta privacy e protezione della sfera personale"
+      }
+    ]
+  },
+  "implementation_rules": {
+    "global": [
+      "Massimo una immagine forte per sezione.",
+      "Alternare sezioni visive e sezioni più testuali.",
+      "Evitare due scene figurative quasi identiche una sotto l’altra.",
+      "Usare alt text su tutte le immagini.",
+      "Usare lazy loading per tutte le immagini tranne il mockup hero.",
+      "Preservare il contenuto informativo delle immagini con testo interno.",
+      "Preferire object-contain per asset esplicativi, object-cover per asset narrativi."
+    ],
+    "mobile_first": [
+      "Hero image sotto CTA e trust pills.",
+      "How-it-works image full width.",
+      "Privacy image full width o in card soft.",
+      "Audience image opzionale su mobile.",
+      "Spazio verticale generoso tra blocchi testo e immagine."
+    ],
+    "animation": [
+      "Hero mockup: subtle floating.",
+      "Section visuals: fade-up on enter.",
+      "No animation if prefers-reduced-motion is enabled."
+    ]
+  },
+  "recommended_minimal_set": [
+    "file:46",
+    "file:48",
+    "file:52",
+    "file:51",
+    "file:50"
+  ]
+}

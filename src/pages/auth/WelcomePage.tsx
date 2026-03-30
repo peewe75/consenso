@@ -7,7 +7,6 @@ import {
   Handshake,
   HeartHandshake,
   Lightbulb,
-  MessageCircleHeart,
   RefreshCcw,
   Shield,
   ShieldCheck,
@@ -51,21 +50,25 @@ const principles = [
     title: 'Chiarezza',
     desc: 'Le intenzioni vengono espresse in modo diretto, prima che l\u2019incertezza prenda il posto del dialogo.',
     Icon: Handshake,
+    img: '/images/principle-clarity-icon.png',
   },
   {
     title: 'Reciprocità',
     desc: 'La conferma esiste solo quando entrambe le persone partecipano attivamente allo stesso passaggio.',
     Icon: HeartHandshake,
+    img: '/images/principle-reciprocity-icon.png',
   },
   {
     title: 'Revoca continua',
     desc: 'Il consenso può essere sospeso o revocato in qualsiasi momento, fino alla chiusura della sessione.',
     Icon: RefreshCcw,
+    img: '/images/principle-revocation-icon.png',
   },
   {
     title: 'Riservatezza',
     desc: 'Il sistema è progettato per raccogliere il minimo necessario e proteggere ciò che appartiene alla sfera privata.',
     Icon: Eye,
+    img: '/images/principle-privacy-icon.png',
   },
 ]
 
@@ -248,20 +251,15 @@ function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Mockup column — placeholder slot */}
-        <motion.div {...fadeProps(0.15)} className="hidden lg:flex items-center justify-center">
-          {/* SLOT: Hero smartphone mockup
-              Prompt: "Premium smartphone mockup for a consent-focused mobile web app,
-              warm neutral ivory background, soft teal accents, elegant and human-centered UI,
-              reassuring and modern, minimal, editorial lighting, privacy-focused product render." */}
-          <div className="relative w-[300px] h-[580px] rounded-[40px] border-2 border-[#DDD4C8] bg-gradient-to-b from-white to-[#FBF8F3] shadow-[0_40px_80px_rgba(37,33,28,0.08)] flex items-center justify-center">
-            <div className="text-center px-8">
-              <ShieldCheck size={48} className="text-[#1E6B68] mx-auto mb-4" />
-              <p className="text-sm font-semibold text-[#25211C]">APP del Consenso</p>
-              <p className="text-xs text-[#6F6A63] mt-1">Esperienza mobile-first</p>
-            </div>
-            {/* Notch */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 rounded-b-2xl bg-[#DDD4C8]/60" />
+        {/* Mockup column */}
+        <motion.div {...fadeProps(0.15)} className="mt-14 lg:mt-0 flex items-center justify-center">
+          <div className="relative w-full max-w-[360px] lg:max-w-[540px] rounded-[32px] overflow-hidden shadow-[0_24px_60px_rgba(30,107,104,0.1)] bg-white/40 backdrop-blur-sm border border-[#DDD4C8]/50 flex items-center justify-center p-2">
+            <img 
+              src="/images/hero-phone-mockup.jpg" 
+              alt="Mockup smartphone dell’app APP del Consenso con interfaccia mobile chiara, privata e rassicurante"
+              className="w-full h-auto object-contain rounded-[24px]"
+              fetchPriority="high"
+            />
           </div>
         </motion.div>
       </div>
@@ -295,14 +293,18 @@ function WhatIsSection() {
               Una web app progettata per supportare la comunicazione esplicita del consenso tra adulti, in un flusso semplice, privato e reciproco. Nasce per ridurre le ambiguità e offrire uno spazio digitale di conferma e controllo condiviso.
             </p>
           </div>
-          <div className="rounded-2xl border border-[#DDD4C8] bg-[#FBF8F3] p-7">
-            {/* SLOT: Illustrazione "Che cos'è"
-                Prompt: "Editorial illustration of two adults having a calm respectful conversation,
-                warm beige and soft teal palette, minimal modern shapes, trust-focused." */}
-            <MessageCircleHeart size={32} className="text-[#1E6B68] mb-4" />
-            <p className="text-[15px] leading-relaxed text-[#6F6A63]">
-              Non trasforma una relazione in una procedura. Aiuta invece a rendere più chiaro un passaggio delicato, con una struttura comprensibile, accessibile da smartphone e pensata per essere usata in presenza.
-            </p>
+          <div className="rounded-2xl border border-[#DDD4C8] bg-[#FBF8F3] overflow-hidden shadow-sm flex flex-col">
+            <img 
+              src="/images/what-is-dialogue.jpg" 
+              alt="Illustrazione editoriale di due adulti che conversano in modo calmo e rispettoso in un ambiente riservato"
+              className="w-full h-auto aspect-[4/3] object-cover"
+              loading="lazy"
+            />
+            <div className="p-7 flex-1">
+              <p className="text-[15px] leading-relaxed text-[#6F6A63]">
+                Non trasforma una relazione in una procedura. Aiuta invece a rendere più chiaro un passaggio delicato, con una struttura comprensibile, accessibile da smartphone e pensata per essere usata in presenza.
+              </p>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -361,7 +363,7 @@ function PrinciplesSection() {
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {principles.map((p, i) => (
             <motion.div key={p.title} {...fadeProps(i * 0.07)} className="rounded-2xl border border-[#DDD4C8] bg-[#FBF8F3] p-6 hover:bg-[#DCE9E5]/30 transition-colors">
-              <p.Icon size={28} className="text-[#1E6B68] mb-4" />
+              <img src={p.img} alt={`Icona editoriale che rappresenta ${p.title.toLowerCase()}`} className="w-[42px] h-[42px] object-contain mb-4 mix-blend-multiply opacity-90" loading="lazy" />
               <h3 className="text-[17px] font-bold text-[#25211C] mb-2">{p.title}</h3>
               <p className="text-[14px] leading-relaxed text-[#6F6A63]">{p.desc}</p>
             </motion.div>
@@ -380,11 +382,20 @@ function HowItWorksSection() {
   return (
     <section id="come-funziona" className="bg-[#FBF8F3] py-20 lg:py-28">
       <div className="mx-auto max-w-3xl px-6">
-        <motion.div {...fadeProps()} className="text-center mb-14">
+        <motion.div {...fadeProps()} className="text-center mb-10">
           <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
             Come funziona
           </h2>
           <p className="text-lg text-[#6F6A63]">Un flusso disegnato per la presenza e l'immediatezza.</p>
+        </motion.div>
+
+        <motion.div {...fadeProps()} className="mb-14 overflow-hidden rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] border border-[#DDD4C8] bg-white">
+          <img 
+            src="/images/how-it-works-flow.jpg" 
+            alt="Schema visivo del funzionamento dell’app con accesso, pairing in presenza, conferma reciproca e controllo con revoca"
+            className="w-full h-auto object-contain"
+            loading="lazy"
+          />
         </motion.div>
 
         <div className="relative space-y-8 before:absolute before:left-[31px] before:top-0 before:h-full before:w-px before:bg-[#DDD4C8]">
@@ -439,36 +450,34 @@ function AudienceSection() {
 function PrivacyTrustSection() {
   return (
     <section id="privacy" className="bg-[#1E6B68] text-white py-20 lg:py-28">
-      <div className="mx-auto max-w-5xl px-6">
-        <div className="grid gap-14 lg:grid-cols-2 items-start">
-          <motion.div {...fadeProps()}>
-            <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight mb-5" style={{ fontFamily: "'DM Serif Display', serif" }}>
-              Privacy e fiducia, fin dall'inizio
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="grid gap-14 lg:grid-cols-2 items-center">
+          <motion.div {...fadeProps()} className="order-2 lg:order-1">
+            <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight mb-8" style={{ fontFamily: "'DM Serif Display', serif" }}>
+              Privacy e fiducia,<br/>fin dall'inizio
             </h2>
-            <p className="text-lg leading-relaxed text-white/80 mb-8">
-              APP del Consenso è pensata secondo un principio semplice: raccogliere il minimo necessario e mantenere il massimo controllo possibile in mano agli utenti.
-            </p>
-
-            {/* SLOT: Visual privacy
-                Prompt: "Abstract privacy illustration with shield, layered cards and protected flow lines,
-                warm ivory background, muted teal and sage palette, elegant minimal editorial style." */}
-            <div className="rounded-2xl bg-white/10 border border-white/15 p-6 backdrop-blur-sm">
-              <Shield size={28} className="text-white/70 mb-3" />
-              <p className="text-sm text-white/60 italic leading-relaxed">
-                L'obiettivo non è complicare la relazione, ma renderla più leggibile, più esplicita e più rispettosa per chi la vive.
-              </p>
-            </div>
-          </motion.div>
-
-          <motion.div {...fadeProps(0.1)}>
-            <ul className="space-y-5">
+            <ul className="space-y-6">
               {privacyBullets.map((b, i) => (
-                <li key={i} className="flex gap-3 items-start">
-                  <ShieldCheck className="text-[#DCE9E5] shrink-0 mt-0.5" size={20} />
-                  <span className="text-[15px] leading-relaxed text-white/85">{b}</span>
+                <li key={i} className="flex gap-4 items-start">
+                  <ShieldCheck className="text-[#DCE9E5] shrink-0 mt-0.5" size={24} />
+                  <span className="text-base leading-relaxed text-white/90">{b}</span>
                 </li>
               ))}
             </ul>
+          </motion.div>
+
+          <motion.div {...fadeProps(0.1)} className="order-1 lg:order-2 flex flex-col pt-4 lg:pt-0">
+            <div className="rounded-3xl bg-white/5 border border-white/10 overflow-hidden shadow-2xl backdrop-blur-sm mb-6">
+              <img 
+                src="/images/privacy-visual.jpg" 
+                alt="Visual astratto che rappresenta privacy, minimizzazione dei dati, controllo condiviso e design riservato"
+                className="w-full h-auto aspect-[4/3] object-contain"
+                loading="lazy"
+              />
+            </div>
+            <p className="text-sm text-white/70 italic leading-relaxed text-center px-4">
+              L'obiettivo non è complicare la relazione, ma renderla più leggibile, più esplicita e più rispettosa per chi la vive.
+            </p>
           </motion.div>
         </div>
       </div>
@@ -529,28 +538,33 @@ function AccessInstallSection({ showIosHint, androidApkLink }: { showIosHint: bo
 
 function VisionSection() {
   return (
-    <section id="visione" className="bg-white py-20 lg:py-28">
-      <div className="mx-auto max-w-5xl px-6 grid gap-14 md:grid-cols-2 items-start">
+    <section id="visione" className="bg-white py-20 lg:py-28 overflow-hidden">
+      <div className="mx-auto max-w-6xl px-6 grid gap-14 lg:grid-cols-2 items-center">
         <motion.div {...fadeProps()}>
           <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-6" style={{ fontFamily: "'DM Serif Display', serif" }}>
             La visione dietro il progetto
           </h2>
-          {/* SLOT: Visual visione
-              Prompt: "Cinematic editorial image symbolizing clarity, calm, respect and trust,
-              soft natural light, warm neutral palette with teal accents, premium website visual." */}
-          <div className="space-y-5 text-lg leading-relaxed text-[#6F6A63]">
+          <div className="space-y-4 text-lg leading-relaxed text-[#6F6A63] mb-10">
             <p>Vogliamo contribuire a una cultura in cui il consenso sia più chiaro da esprimere, più semplice da condividere e più naturale da rispettare.</p>
             <p>Per noi la tecnologia non deve sostituire la relazione umana. Deve però poter offrire uno strumento sobrio, accessibile e responsabile per sostenere chiarezza, parità e consapevolezza nei momenti che contano.</p>
           </div>
+          <div className="space-y-3">
+            <h3 className="text-[17px] font-bold text-[#25211C] mb-4" style={{ fontFamily: "'DM Serif Display', serif" }}>I nostri valori</h3>
+            {values.map((v) => (
+              <div key={v.k} className="rounded-xl border border-[#DDD4C8] bg-[#FBF8F3] p-4 text-[15px]">
+                <span className="font-bold text-[#1E6B68]">{v.k}</span> &mdash; <span className="text-[#6F6A63]">{v.v}</span>
+              </div>
+            ))}
+          </div>
         </motion.div>
 
-        <motion.div {...fadeProps(0.1)} className="space-y-4">
-          <h3 className="text-xl font-bold text-[#25211C] mb-5" style={{ fontFamily: "'DM Serif Display', serif" }}>I nostri valori</h3>
-          {values.map((v) => (
-            <div key={v.k} className="rounded-xl border border-[#DDD4C8] bg-[#FBF8F3] p-4">
-              <span className="font-bold text-[#1E6B68]">{v.k}</span> — <span className="text-[#6F6A63]">{v.v}</span>
-            </div>
-          ))}
+        <motion.div {...fadeProps(0.1)} className="rounded-[32px] border border-[#DDD4C8] overflow-hidden shadow-sm bg-[#FBF8F3]">
+          <img 
+            src="/images/vision-manifesto.jpg"
+            alt="Visual editoriale simbolica che rappresenta chiarezza, rispetto e fiducia come percorso condiviso"
+            className="w-full h-auto object-cover aspect-[4/5]"
+            loading="lazy"
+          />
         </motion.div>
       </div>
     </section>
