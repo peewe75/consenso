@@ -4,6 +4,8 @@ export interface DownloadLink {
   description: string
 }
 
+const DEFAULT_ANDROID_APK_PATH = '/downloads/app-del-consenso-debug.apk'
+
 function resolveLink(value: string | undefined) {
   const trimmed = value?.trim()
   return trimmed ? trimmed : null
@@ -17,8 +19,8 @@ export const downloadLinks: DownloadLink[] = [
   },
   {
     label: 'APK diretto',
-    href: resolveLink(import.meta.env.VITE_ANDROID_APK_URL),
-    description: 'Scarica il file APK appena viene pubblicato.',
+    href: resolveLink(import.meta.env.VITE_ANDROID_APK_URL) ?? DEFAULT_ANDROID_APK_PATH,
+    description: 'Scarica subito l’APK Android direttamente dal sito.',
   },
   {
     label: 'Google Play',
