@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   Apple,
   ArrowRight,
@@ -32,14 +32,13 @@ import { useAuthStore } from '@/stores/authStore'
    ═══════════════════════════════════════════════════════════════════════ */
 
 // ─── Reveal helper ──────────────────────────────────────────────────────────
-function useFade(delay = 0) {
-  const reduced = useReducedMotion()
-  if (reduced) return { initial: {}, whileInView: {}, viewport: {} as const, transition: {} }
+function fadeProps(delay = 0) {
+  
   return {
     initial: { opacity: 0, y: 24 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true, margin: '-80px' } as const,
-    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1], delay },
+    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay },
   }
 }
 
@@ -201,7 +200,7 @@ function StickyHeader() {
 // ═════════════════════════════════════════════════════════════════════════════
 
 function HeroSection() {
-  const fade = useFade()
+  const fade = fadeProps()
 
   return (
     <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 lg:pt-40 lg:pb-28 overflow-hidden">
@@ -250,7 +249,7 @@ function HeroSection() {
         </motion.div>
 
         {/* Mockup column — placeholder slot */}
-        <motion.div {...useFade(0.15)} className="hidden lg:flex items-center justify-center">
+        <motion.div {...fadeProps(0.15)} className="hidden lg:flex items-center justify-center">
           {/* SLOT: Hero smartphone mockup
               Prompt: "Premium smartphone mockup for a consent-focused mobile web app,
               warm neutral ivory background, soft teal accents, elegant and human-centered UI,
@@ -283,7 +282,7 @@ function HeroSection() {
 // ═════════════════════════════════════════════════════════════════════════════
 
 function WhatIsSection() {
-  const fade = useFade()
+  const fade = fadeProps()
   return (
     <section className="bg-white py-20 lg:py-28">
       <div className="mx-auto max-w-5xl px-6">
@@ -319,7 +318,7 @@ function WhyClaritySection() {
   return (
     <section className="bg-[#FBF8F3] py-20 lg:py-28">
       <div className="mx-auto max-w-5xl px-6">
-        <motion.div {...useFade()}>
+        <motion.div {...fadeProps()}>
           <h2 className="text-center text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-4" style={{ fontFamily: "'DM Serif Display', serif" }}>
             Perché la chiarezza conta
           </h2>
@@ -330,7 +329,7 @@ function WhyClaritySection() {
 
         <div className="grid gap-6 md:grid-cols-3">
           {clarityCards.map((c, i) => (
-            <motion.div key={c.title} {...useFade(i * 0.08)} className="rounded-2xl border border-[#DDD4C8] bg-white p-7 hover:shadow-md transition-shadow">
+            <motion.div key={c.title} {...fadeProps(i * 0.08)} className="rounded-2xl border border-[#DDD4C8] bg-white p-7 hover:shadow-md transition-shadow">
               <div className="w-11 h-11 rounded-xl bg-[#DCE9E5] flex items-center justify-center mb-5">
                 <c.Icon size={22} className="text-[#1E6B68]" />
               </div>
@@ -352,7 +351,7 @@ function PrinciplesSection() {
   return (
     <section className="bg-white py-20 lg:py-28">
       <div className="mx-auto max-w-5xl px-6">
-        <motion.div {...useFade()}>
+        <motion.div {...fadeProps()}>
           <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
             Costruita su quattro principi
           </h2>
@@ -361,7 +360,7 @@ function PrinciplesSection() {
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {principles.map((p, i) => (
-            <motion.div key={p.title} {...useFade(i * 0.07)} className="rounded-2xl border border-[#DDD4C8] bg-[#FBF8F3] p-6 hover:bg-[#DCE9E5]/30 transition-colors">
+            <motion.div key={p.title} {...fadeProps(i * 0.07)} className="rounded-2xl border border-[#DDD4C8] bg-[#FBF8F3] p-6 hover:bg-[#DCE9E5]/30 transition-colors">
               <p.Icon size={28} className="text-[#1E6B68] mb-4" />
               <h3 className="text-[17px] font-bold text-[#25211C] mb-2">{p.title}</h3>
               <p className="text-[14px] leading-relaxed text-[#6F6A63]">{p.desc}</p>
@@ -381,7 +380,7 @@ function HowItWorksSection() {
   return (
     <section id="come-funziona" className="bg-[#FBF8F3] py-20 lg:py-28">
       <div className="mx-auto max-w-3xl px-6">
-        <motion.div {...useFade()} className="text-center mb-14">
+        <motion.div {...fadeProps()} className="text-center mb-14">
           <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
             Come funziona
           </h2>
@@ -390,7 +389,7 @@ function HowItWorksSection() {
 
         <div className="relative space-y-8 before:absolute before:left-[31px] before:top-0 before:h-full before:w-px before:bg-[#DDD4C8]">
           {steps.map((s, i) => (
-            <motion.div key={s.num} {...useFade(i * 0.08)} className="relative flex items-start gap-5 pl-0">
+            <motion.div key={s.num} {...fadeProps(i * 0.08)} className="relative flex items-start gap-5 pl-0">
               <div className="flex-shrink-0 w-16 h-16 rounded-full border-[3px] border-[#F7F4EE] bg-[#1E6B68] text-white font-bold text-base flex items-center justify-center shadow-sm z-10">
                 {s.num}
               </div>
@@ -414,7 +413,7 @@ function AudienceSection() {
   return (
     <section id="per-chi-e" className="bg-white py-20 lg:py-28">
       <div className="mx-auto max-w-5xl px-6">
-        <motion.div {...useFade()}>
+        <motion.div {...fadeProps()}>
           <h2 className="text-center text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-12" style={{ fontFamily: "'DM Serif Display', serif" }}>
             Per chi è pensata
           </h2>
@@ -422,7 +421,7 @@ function AudienceSection() {
 
         <div className="grid gap-6 md:grid-cols-3">
           {audiences.map((a, i) => (
-            <motion.div key={a.title} {...useFade(i * 0.08)} className="rounded-2xl border border-[#DDD4C8] bg-[#FBF8F3] p-7 hover:border-[#1E6B68]/30 transition-colors">
+            <motion.div key={a.title} {...fadeProps(i * 0.08)} className="rounded-2xl border border-[#DDD4C8] bg-[#FBF8F3] p-7 hover:border-[#1E6B68]/30 transition-colors">
               <h3 className="text-[17px] font-bold text-[#1E6B68] mb-3">{a.title}</h3>
               <p className="text-[15px] leading-relaxed text-[#6F6A63]">{a.desc}</p>
             </motion.div>
@@ -442,7 +441,7 @@ function PrivacyTrustSection() {
     <section id="privacy" className="bg-[#1E6B68] text-white py-20 lg:py-28">
       <div className="mx-auto max-w-5xl px-6">
         <div className="grid gap-14 lg:grid-cols-2 items-start">
-          <motion.div {...useFade()}>
+          <motion.div {...fadeProps()}>
             <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight mb-5" style={{ fontFamily: "'DM Serif Display', serif" }}>
               Privacy e fiducia, fin dall'inizio
             </h2>
@@ -461,7 +460,7 @@ function PrivacyTrustSection() {
             </div>
           </motion.div>
 
-          <motion.div {...useFade(0.1)}>
+          <motion.div {...fadeProps(0.1)}>
             <ul className="space-y-5">
               {privacyBullets.map((b, i) => (
                 <li key={i} className="flex gap-3 items-start">
@@ -485,7 +484,7 @@ function AccessInstallSection({ showIosHint, androidApkLink }: { showIosHint: bo
   return (
     <section className="bg-[#FBF8F3] py-20 lg:py-28">
       <div className="mx-auto max-w-5xl px-6">
-        <motion.div {...useFade()}>
+        <motion.div {...fadeProps()}>
           <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
             Inizia nel modo che preferisci
           </h2>
@@ -494,7 +493,7 @@ function AccessInstallSection({ showIosHint, androidApkLink }: { showIosHint: bo
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {installCards.map((c, i) => (
-            <motion.div key={c.title} {...useFade(i * 0.06)} className="rounded-2xl border border-[#DDD4C8] bg-white p-6 hover:shadow-sm transition-shadow">
+            <motion.div key={c.title} {...fadeProps(i * 0.06)} className="rounded-2xl border border-[#DDD4C8] bg-white p-6 hover:shadow-sm transition-shadow">
               <div className="w-10 h-10 rounded-xl bg-[#DCE9E5] flex items-center justify-center mb-4">
                 <c.Icon size={20} className="text-[#1E6B68]" />
               </div>
@@ -532,7 +531,7 @@ function VisionSection() {
   return (
     <section id="visione" className="bg-white py-20 lg:py-28">
       <div className="mx-auto max-w-5xl px-6 grid gap-14 md:grid-cols-2 items-start">
-        <motion.div {...useFade()}>
+        <motion.div {...fadeProps()}>
           <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-6" style={{ fontFamily: "'DM Serif Display', serif" }}>
             La visione dietro il progetto
           </h2>
@@ -545,7 +544,7 @@ function VisionSection() {
           </div>
         </motion.div>
 
-        <motion.div {...useFade(0.1)} className="space-y-4">
+        <motion.div {...fadeProps(0.1)} className="space-y-4">
           <h3 className="text-xl font-bold text-[#25211C] mb-5" style={{ fontFamily: "'DM Serif Display', serif" }}>I nostri valori</h3>
           {values.map((v) => (
             <div key={v.k} className="rounded-xl border border-[#DDD4C8] bg-[#FBF8F3] p-4">
@@ -566,7 +565,7 @@ function FAQSection() {
   return (
     <section id="faq" className="bg-[#FBF8F3] py-20 lg:py-28">
       <div className="mx-auto max-w-3xl px-6">
-        <motion.div {...useFade()}>
+        <motion.div {...fadeProps()}>
           <h2 className="text-center text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-10" style={{ fontFamily: "'DM Serif Display', serif" }}>
             Domande frequenti
           </h2>
@@ -608,7 +607,7 @@ function FinalCTASection() {
   return (
     <section className="bg-white py-16 lg:py-24">
       <div className="mx-auto max-w-3xl px-6">
-        <motion.div {...useFade()} className="rounded-3xl border border-[#DDD4C8] bg-gradient-to-br from-[#DCE9E5]/40 to-[#FBF8F3] p-10 sm:p-14 text-center shadow-sm relative overflow-hidden">
+        <motion.div {...fadeProps()} className="rounded-3xl border border-[#DDD4C8] bg-gradient-to-br from-[#DCE9E5]/40 to-[#FBF8F3] p-10 sm:p-14 text-center shadow-sm relative overflow-hidden">
           <div className="pointer-events-none absolute top-0 right-0 h-48 w-48 -translate-y-1/3 translate-x-1/3 rounded-full bg-[#1E6B68]/8 blur-[50px]" />
 
           <h2 className="text-[1.5rem] sm:text-[2rem] font-bold text-[#25211C] mb-4 leading-tight relative z-10" style={{ fontFamily: "'DM Serif Display', serif" }}>
