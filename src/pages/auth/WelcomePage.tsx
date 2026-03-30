@@ -6,11 +6,9 @@ import {
   EyeOff,
   Handshake,
   HeartHandshake,
-  QrCode,
   ShieldCheck,
   Smartphone,
   TimerReset,
-  TriangleAlert,
   Users
 } from 'lucide-react'
 import { useState } from 'react'
