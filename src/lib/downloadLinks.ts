@@ -4,7 +4,7 @@ export interface DownloadLink {
   description: string
 }
 
-const DEFAULT_ANDROID_APK_PATH = '/downloads/app-del-consenso-debug.apk'
+const DEFAULT_ANDROID_APK_PATH = '/downloads/app-del-consenso-release.apk'
 
 function resolveLink(value: string | undefined) {
   const trimmed = value?.trim()

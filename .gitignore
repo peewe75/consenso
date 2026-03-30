@@ -24,7 +24,6 @@ dist-ssr
 *.sw?
 
 # Capacitor native projects
-android
 ios
 
 # Env files

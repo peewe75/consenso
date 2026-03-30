@@ -23,6 +23,27 @@ Build produzione:
 npm run build
 ```
 
+Build Android debug:
+
+```bash
+npm run build
+npx cap sync android
+cd android
+gradlew.bat assembleDebug
+```
+
+Build Android release firmata:
+
+```bash
+copy android\\keystore.properties.example android\\keystore.properties
+# aggiorna password, alias e percorso del keystore
+npm run build
+npx cap sync android
+cd android
+gradlew.bat assembleRelease
+gradlew.bat bundleRelease
+```
+
 Lint:
 
 ```bash
@@ -48,6 +69,26 @@ Le tre variabili download sono opzionali:
 - `VITE_APP_STORE_URL`: URL pubblico della scheda App Store
 
 Se lasciate vuote, la landing mostra i pulsanti come non ancora pubblicati.
+
+## Android release
+
+Il progetto supporta una firma release tramite `android/keystore.properties`.
+
+File coinvolti:
+
+- `android/keystore.properties.example`: template da copiare in `android/keystore.properties`
+- `android/app/build.gradle`: legge i parametri di firma release
+
+Valori attesi nel file:
+
+```properties
+storeFile=app/app-del-consenso-upload.keystore
+storePassword=change-me
+keyAlias=consenso-upload
+keyPassword=change-me
+```
+
+Per distribuzione seria o Google Play, conserva il keystore in backup sicuro: senza quel file non potrai pubblicare aggiornamenti firmati con la stessa identita.
 
 ## Supabase
 
