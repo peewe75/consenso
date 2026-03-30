@@ -146,7 +146,7 @@ export function WelcomePage() {
   const androidApkLink = downloadLinks.find((i) => i.label === 'APK diretto')?.href ?? null
 
   return (
-    <div className="min-h-screen bg-[#F7F4EE] text-[#25211C] font-[Inter,ui-sans-serif,system-ui,sans-serif] selection:bg-[#1E6B68]/20 antialiased">
+    <div className="min-h-screen bg-[#F7F4EE] text-[#25211C] font-sans selection:bg-[#1E6B68]/20 antialiased">
       <StickyHeader />
       <main>
         <HeroSection />
@@ -175,7 +175,7 @@ function StickyHeader() {
     <header className="fixed inset-x-0 top-0 z-50 flex h-16 items-center justify-between border-b border-[#DDD4C8]/60 bg-[#F7F4EE]/90 px-5 sm:px-8 backdrop-blur-lg">
       <div className="flex items-center gap-2">
         <ShieldCheck size={22} className="text-[#1E6B68]" />
-        <span className="text-[15px] font-bold tracking-tight text-[#25211C]" style={{ fontFamily: "'DM Serif Display', serif" }}>APP del Consenso</span>
+        <span className="text-[15px] font-bold tracking-tight text-[#25211C] font-serif">APP del Consenso</span>
       </div>
 
       <nav className="hidden md:flex items-center gap-7 text-[13px] font-semibold text-[#6F6A63]">
@@ -218,7 +218,7 @@ function HeroSection() {
             Piattaforma per il consenso chiaro e reciproco
           </span>
 
-          <h1 className="text-[2rem] sm:text-[2.75rem] lg:text-[3.25rem] font-bold leading-[1.12] tracking-tight text-[#25211C] mb-6" style={{ fontFamily: "'DM Serif Display', serif" }}>
+          <h1 className="text-[2rem] sm:text-[2.75rem] lg:text-[3.25rem] font-bold leading-[1.12] tracking-tight text-[#25211C] mb-6 font-serif">
             Più chiarezza, più rispetto nelle interazioni che contano.
           </h1>
 
@@ -286,7 +286,7 @@ function WhatIsSection() {
       <div className="mx-auto max-w-5xl px-6">
         <motion.div {...fade} className="grid gap-10 md:grid-cols-2 md:items-start">
           <div>
-            <h2 className="text-[1.75rem] sm:text-[2rem] font-bold leading-tight tracking-tight text-[#25211C] mb-5" style={{ fontFamily: "'DM Serif Display', serif" }}>
+            <h2 className="text-[1.75rem] sm:text-[2rem] font-bold leading-tight tracking-tight text-[#25211C] mb-5 font-serif">
               Che cos'è APP del Consenso
             </h2>
             <p className="text-lg leading-relaxed text-[#6F6A63]">
@@ -321,7 +321,7 @@ function WhyClaritySection() {
     <section className="bg-[#FBF8F3] py-20 lg:py-28">
       <div className="mx-auto max-w-5xl px-6">
         <motion.div {...fadeProps()}>
-          <h2 className="text-center text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-4" style={{ fontFamily: "'DM Serif Display', serif" }}>
+          <h2 className="text-center text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-4 font-serif">
             Perché la chiarezza conta
           </h2>
           <p className="text-center text-lg text-[#6F6A63] mb-14 max-w-2xl mx-auto">
@@ -354,7 +354,7 @@ function PrinciplesSection() {
     <section className="bg-white py-20 lg:py-28">
       <div className="mx-auto max-w-5xl px-6">
         <motion.div {...fadeProps()}>
-          <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
+          <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-3 font-serif">
             Costruita su quattro principi
           </h2>
           <p className="text-lg text-[#6F6A63] mb-12 max-w-xl">Ogni decisione di design parte da qui.</p>
@@ -383,7 +383,7 @@ function HowItWorksSection() {
     <section id="come-funziona" className="bg-[#FBF8F3] py-20 lg:py-28">
       <div className="mx-auto max-w-3xl px-6">
         <motion.div {...fadeProps()} className="text-center mb-10">
-          <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
+          <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-3 font-serif">
             Come funziona
           </h2>
           <p className="text-lg text-[#6F6A63]">Un flusso disegnato per la presenza e l'immediatezza.</p>
@@ -425,7 +425,7 @@ function AudienceSection() {
     <section id="per-chi-e" className="bg-white py-20 lg:py-28">
       <div className="mx-auto max-w-5xl px-6">
         <motion.div {...fadeProps()}>
-          <h2 className="text-center text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-12" style={{ fontFamily: "'DM Serif Display', serif" }}>
+          <h2 className="text-center text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-12 font-serif">
             Per chi è pensata
           </h2>
         </motion.div>
@@ -453,7 +453,7 @@ function PrivacyTrustSection() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="grid gap-14 lg:grid-cols-2 items-center">
           <motion.div {...fadeProps()} className="order-2 lg:order-1">
-            <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight mb-8" style={{ fontFamily: "'DM Serif Display', serif" }}>
+            <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight mb-8 font-serif">
               Privacy e fiducia,<br/>fin dall'inizio
             </h2>
             <ul className="space-y-6">
@@ -494,7 +494,7 @@ function AccessInstallSection({ showIosHint, androidApkLink }: { showIosHint: bo
     <section className="bg-[#FBF8F3] py-20 lg:py-28">
       <div className="mx-auto max-w-5xl px-6">
         <motion.div {...fadeProps()}>
-          <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
+          <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-3 font-serif">
             Inizia nel modo che preferisci
           </h2>
           <p className="text-lg text-[#6F6A63] mb-10 max-w-xl">Accesso semplice e immediato, senza procedure complesse.</p>
@@ -541,7 +541,7 @@ function VisionSection() {
     <section id="visione" className="bg-white py-20 lg:py-28 overflow-hidden">
       <div className="mx-auto max-w-6xl px-6 grid gap-14 lg:grid-cols-2 items-center">
         <motion.div {...fadeProps()}>
-          <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-6" style={{ fontFamily: "'DM Serif Display', serif" }}>
+          <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-6 font-serif">
             La visione dietro il progetto
           </h2>
           <div className="space-y-4 text-lg leading-relaxed text-[#6F6A63] mb-10">
@@ -549,7 +549,7 @@ function VisionSection() {
             <p>Per noi la tecnologia non deve sostituire la relazione umana. Deve però poter offrire uno strumento sobrio, accessibile e responsabile per sostenere chiarezza, parità e consapevolezza nei momenti che contano.</p>
           </div>
           <div className="space-y-3">
-            <h3 className="text-[17px] font-bold text-[#25211C] mb-4" style={{ fontFamily: "'DM Serif Display', serif" }}>I nostri valori</h3>
+            <h3 className="text-[17px] font-bold text-[#25211C] mb-4 font-serif">I nostri valori</h3>
             {values.map((v) => (
               <div key={v.k} className="rounded-xl border border-[#DDD4C8] bg-[#FBF8F3] p-4 text-[15px]">
                 <span className="font-bold text-[#1E6B68]">{v.k}</span> &mdash; <span className="text-[#6F6A63]">{v.v}</span>
@@ -580,7 +580,7 @@ function FAQSection() {
     <section id="faq" className="bg-[#FBF8F3] py-20 lg:py-28">
       <div className="mx-auto max-w-3xl px-6">
         <motion.div {...fadeProps()}>
-          <h2 className="text-center text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-10" style={{ fontFamily: "'DM Serif Display', serif" }}>
+          <h2 className="text-center text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-10 font-serif">
             Domande frequenti
           </h2>
         </motion.div>
@@ -624,7 +624,7 @@ function FinalCTASection() {
         <motion.div {...fadeProps()} className="rounded-3xl border border-[#DDD4C8] bg-gradient-to-br from-[#DCE9E5]/40 to-[#FBF8F3] p-10 sm:p-14 text-center shadow-sm relative overflow-hidden">
           <div className="pointer-events-none absolute top-0 right-0 h-48 w-48 -translate-y-1/3 translate-x-1/3 rounded-full bg-[#1E6B68]/8 blur-[50px]" />
 
-          <h2 className="text-[1.5rem] sm:text-[2rem] font-bold text-[#25211C] mb-4 leading-tight relative z-10" style={{ fontFamily: "'DM Serif Display', serif" }}>
+          <h2 className="text-[1.5rem] sm:text-[2rem] font-bold text-[#25211C] mb-4 leading-tight relative z-10 font-serif">
             Porta più chiarezza nelle interazioni che contano.
           </h2>
           <p className="text-[#6F6A63] mb-8 max-w-md mx-auto text-lg relative z-10">

@@ -88,18 +88,18 @@ export function RegisterPage() {
     <main className="safe-page-tight flex min-h-screen flex-col justify-between gap-8">
       <section className="space-y-8">
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/18">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/10">
             <ShieldCheck size={22} className="text-accent" />
           </div>
           <div>
             <p className="text-sm text-text-secondary">Nuovo account</p>
-            <h1 className="text-2xl font-bold">Configura il tuo profilo</h1>
+            <h1 className="text-2xl font-bold text-text-primary">Configura il tuo profilo</h1>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-2">
           {[1, 2].map((current) => (
-            <div key={current} className={cn('h-1.5 rounded-full', current <= step ? 'bg-accent' : 'bg-white/8')} />
+            <div key={current} className={cn('h-1.5 rounded-full', current <= step ? 'bg-accent' : 'bg-border')} />
           ))}
         </div>
 
@@ -151,11 +151,11 @@ export function RegisterPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="panel rounded-[28px] px-5 py-6">
               <div className="flex flex-col items-center gap-4 text-center">
-                <div className="flex h-24 w-24 items-center justify-center rounded-[28px] text-4xl font-bold text-white" style={{ backgroundColor: avatarColor }}>
+                <div className="flex h-24 w-24 items-center justify-center rounded-[28px] text-4xl font-bold text-white shadow-sm" style={{ backgroundColor: avatarColor }}>
                   {initialsFromName(displayName)}
                 </div>
                 <div>
-                  <p className="text-lg font-semibold">{displayName.trim() || 'Il tuo pseudonimo'}</p>
+                  <p className="text-lg font-semibold text-text-primary">{displayName.trim() || 'Il tuo pseudonimo'}</p>
                   <p className="mt-1 text-sm text-text-secondary">Visibile agli altri partecipanti nella sessione</p>
                 </div>
               </div>
@@ -182,8 +182,8 @@ export function RegisterPage() {
                     type="button"
                     onClick={() => setAvatarColor(color)}
                     className={cn(
-                      'flex min-h-12 items-center justify-center rounded-2xl border border-white/10 transition active:scale-[0.98]',
-                      avatarColor === color && 'ring-2 ring-white/70 ring-offset-2 ring-offset-background',
+                      'flex min-h-12 items-center justify-center rounded-2xl border border-border shadow-sm transition active:scale-[0.98]',
+                      avatarColor === color && 'ring-2 ring-accent ring-offset-2 ring-offset-background',
                     )}
                     style={{ backgroundColor: color }}
                     aria-label={`Seleziona il colore ${color}`}
@@ -202,14 +202,14 @@ export function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex min-h-14 w-full items-center justify-center rounded-full bg-accent text-base font-semibold text-white transition active:scale-[0.98] active:opacity-90 disabled:opacity-50"
+                className="flex min-h-14 w-full items-center justify-center rounded-full bg-accent hover:bg-accent-hover shadow-soft text-base font-semibold text-white transition active:scale-[0.98] active:opacity-90 disabled:opacity-50"
               >
                 {loading ? 'Creazione account...' : 'Crea account'}
               </button>
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="flex min-h-14 w-full items-center justify-center rounded-full border border-white/10 bg-white/4 text-base font-medium text-text-secondary transition active:scale-[0.98]"
+                className="flex min-h-14 w-full items-center justify-center rounded-full border border-border bg-white text-base font-medium text-text-secondary hover:bg-surface transition active:scale-[0.98]"
               >
                 Torna indietro
               </button>
@@ -244,4 +244,4 @@ function ErrorBox({ message }: { message: string }) {
 }
 
 const fieldInputClass =
-  'min-h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-4 text-base text-text-primary outline-none transition placeholder:text-text-muted focus:border-accent focus:bg-white/[0.07]'
+  'min-h-14 w-full rounded-2xl border border-border bg-white px-4 text-base text-text-primary outline-none transition placeholder:text-text-muted focus:border-accent focus:ring-2 focus:ring-accent/10'

@@ -9,20 +9,15 @@ import { useTimer } from '@/hooks/useTimer'
 import { formatSessionDate, formatSessionTime, getSessionStatusMeta, initialsFromName } from '@/lib/utils'
 import { useAuthStore } from '@/stores/authStore'
 
-// ─── Stitch status badge map ──────────────────────────────────────────────────
+// ─── Semantic status badge map ──────────────────────────────────────────────────
 const statusBadge: Record<string, { bg: string; text: string; border: string }> = {
-  pending:   { bg: 'bg-[#7C4B00]/20',  text: 'text-[#F59E0B]',  border: 'border-[#7C4B00]/30' },
-  active:    { bg: 'bg-[#003824]/20',  text: 'text-[#4EDEA3]',  border: 'border-[#4EDEA3]/20' },
-  confirmed: { bg: 'bg-[#003824]/20',  text: 'text-[#4EDEA3]',  border: 'border-[#4EDEA3]/20' },
-  revoked:   { bg: 'bg-[#93000A]/20',  text: 'text-[#FFB4AB]',  border: 'border-[#93000A]/30' },
-  expired:   { bg: 'bg-[#2A292F]/40',  text: 'text-[#908FA0]',  border: 'border-[#464554]/20' },
+  pending:   { bg: 'bg-warning/20',  text: 'text-warning',  border: 'border-warning/30' },
+  active:    { bg: 'bg-success/20',  text: 'text-success',  border: 'border-success/20' },
+  confirmed: { bg: 'bg-success/20',  text: 'text-success',  border: 'border-success/20' },
+  revoked:   { bg: 'bg-danger/20',   text: 'text-danger',   border: 'border-danger/30' },
+  expired:   { bg: 'bg-surface-2',   text: 'text-text-muted', border: 'border-border' },
 }
 // ─────────────────────────────────────────────────────────────────────────────
-
-const glassCard = {
-  background: 'linear-gradient(180deg, rgba(34,34,58,0.8) 0%, rgba(26,26,36,0.9) 100%)',
-  backdropFilter: 'blur(12px)',
-} as const
 
 export function SessionPage() {
   const navigate = useNavigate()
@@ -46,10 +41,7 @@ export function SessionPage() {
   if (loading || !session || !visualState) {
     return (
       <main className="safe-page-tight flex min-h-screen items-center justify-center">
-        <div
-          className="rounded-2xl border border-[#464554]/20 px-5 py-6 text-sm text-[#908FA0]"
-          style={glassCard}
-        >
+        <div className="panel rounded-2xl px-5 py-6 text-sm text-text-muted">
           {error ?? 'Caricamento sessione...'}
         </div>
       </main>
@@ -61,7 +53,7 @@ export function SessionPage() {
   const myParticipant = session.participants.find((p) => p.user_id === user?.id)
   const otherParticipants = session.participants.filter((p) => p.user_id !== user?.id)
   const canInteract = !expired && !['confirmed', 'revoked', 'expired'].includes(session.status)
-  const timerColor = expired ? 'text-[#FFB4AB]' : expiringSoon ? 'text-[#F59E0B]' : 'text-[#4EDEA3]'
+  const timerColor = expired ? 'text-danger' : expiringSoon ? 'text-warning' : 'text-success'
 
   async function handleRevoke() {
     setShowRevokeSheet(false)
@@ -70,27 +62,27 @@ export function SessionPage() {
 
   return (
     <main
-      className="safe-page-tight space-y-6 bg-[#131318]"
+      className="safe-page-tight space-y-6 bg-background"
       style={{
         paddingBottom: canInteract ? 'calc(env(safe-area-inset-bottom) + 220px)' : undefined,
       }}
     >
       {/* Ambient glow */}
-      <div className="pointer-events-none fixed right-0 top-0 h-[44vh] w-1/2 rounded-full bg-[#C0C1FF]/5 blur-[120px]" />
-      <div className="pointer-events-none fixed bottom-0 left-0 h-[26vh] w-full bg-gradient-to-t from-[#C0C1FF]/5 to-transparent" />
+      <div className="pointer-events-none fixed right-0 top-0 h-[44vh] w-1/2 rounded-full bg-accent/5 blur-[120px]" />
+      <div className="pointer-events-none fixed bottom-0 left-0 h-[26vh] w-full bg-gradient-to-t from-accent/5 to-transparent" />
 
       {/* Back button */}
       <button
         type="button"
         onClick={() => navigate('/app')}
-        className="inline-flex min-h-11 items-center gap-2 rounded-full text-sm font-medium text-[#908FA0] transition active:scale-[0.98]"
+        className="inline-flex min-h-11 items-center gap-2 rounded-full text-sm font-medium text-text-muted transition active:scale-[0.98]"
       >
         <ChevronLeft size={18} />
         Torna alla home
       </button>
 
       {/* ── Header card ─────────────────────────────────────────────────── */}
-      <section className="rounded-[28px] border border-[#464554]/20 p-6" style={glassCard}>
+      <section className="panel rounded-[28px] p-6">
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="mb-3 flex items-center gap-2">
@@ -100,17 +92,17 @@ export function SessionPage() {
                 {visualState.label}
               </span>
             </div>
-            <h1 className="text-[2.5rem] font-extrabold leading-[0.95] tracking-tight text-[#E4E1E9]">
+            <h1 className="text-[2.5rem] font-extrabold leading-[0.95] tracking-tight text-text-primary">
               Sessione di consenso
             </h1>
-            <p className="mt-2 text-sm text-[#908FA0]">{formatSessionDate(session.initiated_at)}</p>
+            <p className="mt-2 text-sm text-text-muted">{formatSessionDate(session.initiated_at)}</p>
           </div>
         </div>
 
         {/* Timer bento */}
-        <div className="mt-5 flex items-center justify-between overflow-hidden rounded-2xl border border-[#464554]/20 bg-[#1B1B20] px-5 py-4">
+        <div className="mt-5 flex items-center justify-between overflow-hidden rounded-2xl border border-border bg-surface px-5 py-4">
           <div className="flex flex-col gap-1">
-            <span className="text-[11px] uppercase tracking-[0.05em] text-[#908FA0]">Scadenza sessione</span>
+            <span className="text-[11px] uppercase tracking-[0.05em] text-text-muted">Scadenza sessione</span>
             <div className="flex items-center gap-3">
               <Clock3 size={20} className={timerColor} />
               <span className={`font-mono text-[2rem] font-bold tracking-tighter ${timerColor}`}>
@@ -119,17 +111,17 @@ export function SessionPage() {
             </div>
           </div>
           {/* Decorative ghost icon */}
-          <Clock3 size={64} className="opacity-5 text-[#E4E1E9]" />
+          <Clock3 size={64} className="opacity-5 text-text-primary" />
         </div>
       </section>
 
       {/* ── Participants ─────────────────────────────────────────────────── */}
-      <section className="rounded-[28px] border border-[#464554]/20 p-6" style={glassCard}>
+      <section className="panel rounded-[28px] p-6">
         <div className="mb-4 flex items-center gap-2">
-          <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#908FA0]">
+          <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-muted">
             Partecipanti
           </span>
-          <Users size={14} className="text-[#908FA0]" />
+          <Users size={14} className="text-text-muted" />
         </div>
         <div className="space-y-3">
           {myParticipant ? (
@@ -145,10 +137,10 @@ export function SessionPage() {
               }
               statusClass={
                 myParticipant.currentStatus === 'confirmed'
-                  ? 'bg-[#003824]/20 text-[#4EDEA3] border-[#4EDEA3]/20'
+                  ? 'bg-success/20 text-success border-success/20'
                   : myParticipant.currentStatus === 'revoked'
-                    ? 'bg-[#93000A]/20 text-[#FFB4AB] border-[#93000A]/20'
-                    : 'bg-[#C0C1FF]/10 text-[#C0C1FF] border-[#464554]/20'
+                    ? 'bg-danger/20 text-danger border-danger/20'
+                    : 'bg-accent/10 text-accent border-border/50'
               }
               caption={
                 myParticipant.lastActionAt
@@ -163,7 +155,7 @@ export function SessionPage() {
               name={p.profile.display_name}
               color={p.profile.avatar_color}
               statusLabel="Privato"
-              statusClass="bg-[#1B1B20] text-[#908FA0] border-[#464554]/20"
+              statusClass="bg-surface text-text-muted border-border"
               caption="Mostriamo solo il conteggio aggregato delle conferme."
             />
           ))}
@@ -171,15 +163,15 @@ export function SessionPage() {
       </section>
 
       {/* ── Aggregate ────────────────────────────────────────────────────── */}
-      <section className="rounded-[28px] border border-[#464554]/20 px-5 py-5" style={glassCard}>
+      <section className="panel rounded-[28px] px-5 py-5">
         <div className="mb-3 flex items-center gap-2">
-          <ShieldCheck size={18} className="text-[#C0C1FF]" />
-          <h2 className="text-base font-bold uppercase tracking-wide text-[#E4E1E9]">Stato aggregato</h2>
+          <ShieldCheck size={18} className="text-accent" />
+          <h2 className="text-base font-bold uppercase tracking-wide text-text-primary">Stato aggregato</h2>
         </div>
-        <p className="text-sm leading-6 text-[#C7C4D7]">
+        <p className="text-sm leading-6 text-text-secondary">
           {session.confirmedCount}/{session.participant_count} hanno confermato.
         </p>
-        <p className="mt-2 text-sm leading-6 text-[#908FA0]">
+        <p className="mt-2 text-sm leading-6 text-text-muted">
           Gli stati individuali degli altri partecipanti non vengono esposti. Vedrai solo il tuo e il
           conteggio totale.
         </p>
@@ -187,15 +179,12 @@ export function SessionPage() {
 
       {/* ── Action / Final state ─────────────────────────────────────────── */}
       {canInteract ? (
-        <section
-          className="hidden flex-col items-center gap-6 rounded-[28px] border border-[#464554]/20 px-5 py-8 shadow-[0_20px_60px_-15px_rgba(192,193,255,0.15)] md:flex"
-          style={glassCard}
-        >
+        <section className="panel hidden flex-col items-center gap-6 rounded-[28px] px-5 py-8 shadow-soft md:flex">
           <div className="space-y-2 text-center">
-            <h2 className="text-xl font-bold text-[#E4E1E9]">
+            <h2 className="text-xl font-bold text-text-primary">
               {session.myStatus === 'confirmed' ? 'Il tuo consenso è registrato' : 'Conferma il tuo consenso'}
             </h2>
-            <p className="px-4 text-sm text-[#908FA0]">
+            <p className="px-4 text-sm text-text-muted">
               La conferma è sempre revocabile. Ogni azione richiede pressione prolungata di 600 ms.
             </p>
           </div>
@@ -204,16 +193,16 @@ export function SessionPage() {
             <ConsentButton mode="confirm" onAction={confirmConsent} />
           ) : (
             <div className="flex flex-col items-center gap-4 text-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#003824]/20">
-                <ShieldCheck size={34} className="text-[#4EDEA3]" />
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-success/20">
+                <ShieldCheck size={34} className="text-success" />
               </div>
-              <p className="text-sm leading-6 text-[#C7C4D7]">
+              <p className="text-sm leading-6 text-text-secondary">
                 Se vuoi puoi ancora revocare la tua scelta prima della chiusura o della scadenza.
               </p>
               <button
                 type="button"
                 onClick={() => setShowRevokeSheet(true)}
-                className="flex min-h-12 items-center justify-center rounded-full border border-[#93000A]/30 bg-[#93000A]/10 px-6 text-sm font-semibold text-[#FFB4AB] transition active:scale-[0.98]"
+                className="flex min-h-12 items-center justify-center rounded-full border border-danger/30 bg-danger/10 px-6 text-sm font-semibold text-danger transition active:scale-[0.98]"
               >
                 Apri revoca
               </button>
@@ -221,18 +210,15 @@ export function SessionPage() {
           )}
         </section>
       ) : (
-        <section
-          className="rounded-[28px] border border-[#464554]/20 px-5 py-6 text-center"
-          style={glassCard}
-        >
-          <p className="text-lg font-semibold text-[#E4E1E9]">
+        <section className="panel rounded-[28px] px-5 py-6 text-center">
+          <p className="text-lg font-semibold text-text-primary">
             {session.status === 'confirmed'
               ? 'Sessione confermata'
               : session.status === 'revoked'
                 ? 'Sessione revocata'
                 : 'Sessione scaduta'}
           </p>
-          <p className="mt-2 text-sm leading-6 text-[#C7C4D7]">
+          <p className="mt-2 text-sm leading-6 text-text-secondary">
             {session.status === 'confirmed'
               ? 'Tutti hanno confermato entro la finestra prevista.'
               : session.status === 'revoked'
@@ -245,25 +231,18 @@ export function SessionPage() {
       {/* ── Revoke bottom sheet ──────────────────────────────────────────── */}
       {canInteract ? (
         <section className="fixed inset-x-0 bottom-0 z-40 px-[calc(env(safe-area-inset-left)+16px)] pb-[calc(env(safe-area-inset-bottom)+16px)] pr-[calc(env(safe-area-inset-right)+16px)] md:hidden">
-          <div
-            className="rounded-[28px] border border-[#464554]/20 px-4 py-4 shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.6)]"
-            style={{
-              ...glassCard,
-              background:
-                'linear-gradient(180deg, rgba(34,34,58,0.96) 0%, rgba(26,26,36,0.98) 100%)',
-            }}
-          >
+          <div className="panel rounded-[28px] px-4 py-4 shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.6)]">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0 flex-1">
-                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#908FA0]">
+                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-text-muted">
                   Azione rapida
                 </p>
-                <h2 className="mt-1 text-base font-bold text-[#E4E1E9]">
+                <h2 className="mt-1 text-base font-bold text-text-primary">
                   {session.myStatus === 'confirmed'
                     ? 'Consenso registrato'
                     : 'Tieni premuto per confermare'}
                 </h2>
-                <p className="mt-1 text-xs leading-5 text-[#908FA0]">
+                <p className="mt-1 text-xs leading-5 text-text-muted">
                   {session.myStatus === 'confirmed'
                     ? 'Puoi ancora aprire la revoca finche la sessione resta attiva.'
                     : 'La CTA resta visibile qui in basso per un uso rapido su smartphone.'}
@@ -281,7 +260,7 @@ export function SessionPage() {
                 <button
                   type="button"
                   onClick={() => setShowRevokeSheet(true)}
-                  className="flex min-h-12 shrink-0 items-center justify-center rounded-full border border-[#93000A]/30 bg-[#93000A]/10 px-5 text-sm font-semibold text-[#FFB4AB] transition active:scale-[0.98]"
+                  className="flex min-h-12 shrink-0 items-center justify-center rounded-full border border-danger/30 bg-danger/10 px-5 text-sm font-semibold text-danger transition active:scale-[0.98]"
                 >
                   Apri revoca
                 </button>
@@ -309,11 +288,11 @@ export function SessionPage() {
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 30, opacity: 0 }}
-              className="absolute inset-x-0 bottom-0 rounded-t-[32px] border-t border-[#464554]/20 bg-[#1A1A24] px-5 pb-[calc(env(safe-area-inset-bottom)+24px)] pt-6"
+              className="absolute inset-x-0 bottom-0 rounded-t-[32px] border-t border-border bg-surface px-5 pb-[calc(env(safe-area-inset-bottom)+24px)] pt-6"
             >
-              <div className="mx-auto mb-5 h-1.5 w-12 rounded-full bg-[#35343A]" />
-              <h3 className="text-xl font-bold text-[#E4E1E9]">Revoca il consenso</h3>
-              <p className="mt-2 max-w-sm text-sm leading-6 text-[#C7C4D7]">
+              <div className="mx-auto mb-5 h-1.5 w-12 rounded-full bg-border" />
+              <h3 className="text-xl font-bold text-text-primary">Revoca il consenso</h3>
+              <p className="mt-2 max-w-sm text-sm leading-6 text-text-secondary">
                 Stai per revocare il tuo consenso. Questa azione è immediata e tutti i partecipanti ne saranno
                 informati.
               </p>
@@ -322,7 +301,7 @@ export function SessionPage() {
                 <button
                   type="button"
                   onClick={() => setShowRevokeSheet(false)}
-                  className="flex min-h-12 w-full items-center justify-center rounded-full border border-[#464554]/20 bg-white/4 text-sm font-medium text-[#C7C4D7] transition active:scale-[0.98]"
+                  className="flex min-h-12 w-full items-center justify-center rounded-full border border-border bg-transparent text-sm font-medium text-text-primary transition active:scale-[0.98]"
                 >
                   Annulla
                 </button>
@@ -351,16 +330,16 @@ function ParticipantRow({
   caption: string
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-[#464554]/20 bg-[#1B1B20] px-3 py-3">
+    <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-3 py-3">
       <div
-        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-base font-bold text-white"
+        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-base font-bold text-white shadow-soft"
         style={{ backgroundColor: color }}
       >
         {initialsFromName(name)}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold text-[#E4E1E9]">{name}</p>
-        <p className="mt-0.5 text-xs leading-5 text-[#908FA0]">{caption}</p>
+        <p className="truncate text-sm font-semibold text-text-primary">{name}</p>
+        <p className="mt-0.5 text-xs leading-5 text-text-muted">{caption}</p>
       </div>
       <span
         className={`rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${statusClass}`}
