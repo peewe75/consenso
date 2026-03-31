@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { buildActionHash } from '@/lib/crypto'
+import { withRetry } from '@/lib/retry'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { useSessionStore } from '@/stores/sessionStore'
@@ -80,13 +81,18 @@ export function useSession(sessionId: string | null) {
     const timestamp = new Date().toISOString()
     const hash = await buildActionHash(sessionId, user.id, 'confirmed', timestamp)
 
-    const { error: rpcError } = await supabase.rpc('record_consent_action', {
-      p_session_id: sessionId,
-      p_action: 'confirmed',
-      p_action_hash: hash,
-    })
+    await withRetry(
+      async () => {
+        const { error: rpcError } = await supabase.rpc('record_consent_action', {
+          p_session_id: sessionId,
+          p_action: 'confirmed',
+          p_action_hash: hash,
+        })
+        if (rpcError) throw rpcError
+      },
+      { retries: 2, delayMs: 500 },
+    )
 
-    if (rpcError) throw rpcError
     await loadSession()
   }, [loadSession, sessionId, user])
 
@@ -96,13 +102,18 @@ export function useSession(sessionId: string | null) {
     const timestamp = new Date().toISOString()
     const hash = await buildActionHash(sessionId, user.id, 'revoked', timestamp)
 
-    const { error: rpcError } = await supabase.rpc('record_consent_action', {
-      p_session_id: sessionId,
-      p_action: 'revoked',
-      p_action_hash: hash,
-    })
+    await withRetry(
+      async () => {
+        const { error: rpcError } = await supabase.rpc('record_consent_action', {
+          p_session_id: sessionId,
+          p_action: 'revoked',
+          p_action_hash: hash,
+        })
+        if (rpcError) throw rpcError
+      },
+      { retries: 2, delayMs: 500 },
+    )
 
-    if (rpcError) throw rpcError
     await loadSession()
   }, [loadSession, sessionId, user])
 

@@ -27,7 +27,7 @@ export function ShowQRPage() {
       .eq('creator_id', user.id)
       .is('used_at', null)
 
-    const { data: freshCode, error } = await supabase.rpc('generate_pairing_code')
+    const { data: freshCode, error } = await supabase.rpc('generate_pairing_code_safe')
 
     if (error || !freshCode) {
       setLoading(false)

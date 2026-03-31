@@ -144,12 +144,14 @@ export function WelcomePage() {
 
   const showIosHint = isIosSafariInstallPromptVisible()
   const androidApkLink = downloadLinks.find((i) => i.label === 'APK diretto')?.href ?? null
+  const installHref = androidApkLink ?? '#installazione'
+  const installLabel = androidApkLink ? 'Scarica l’app Android' : showIosHint ? 'Installa su iPhone' : 'Installa l’app'
 
   return (
     <div className="min-h-screen bg-[#F7F4EE] text-[#25211C] font-sans selection:bg-[#1E6B68]/20 antialiased">
-      <StickyHeader />
+      <StickyHeader installHref={installHref} installLabel={installLabel} />
       <main>
-        <HeroSection />
+        <HeroSection installHref={installHref} installLabel={installLabel} androidApkLink={androidApkLink} showIosHint={showIosHint} />
         <WhatIsSection />
         <WhyClaritySection />
         <PrinciplesSection />
@@ -159,7 +161,7 @@ export function WelcomePage() {
         <AccessInstallSection showIosHint={showIosHint} androidApkLink={androidApkLink} />
         <VisionSection />
         <FAQSection />
-        <FinalCTASection />
+        <FinalCTASection installHref={installHref} installLabel={installLabel} androidApkLink={androidApkLink} showIosHint={showIosHint} />
       </main>
       <LandingFooter androidApkLink={androidApkLink} />
     </div>
@@ -170,7 +172,7 @@ export function WelcomePage() {
 // 1. STICKY HEADER
 // ═════════════════════════════════════════════════════════════════════════════
 
-function StickyHeader() {
+function StickyHeader({ installHref, installLabel }: { installHref: string; installLabel: string }) {
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex h-16 items-center justify-between border-b border-[#DDD4C8]/60 bg-[#F7F4EE]/90 px-5 sm:px-8 backdrop-blur-lg">
       <div className="flex items-center gap-2">
@@ -190,6 +192,9 @@ function StickyHeader() {
         <Link to="/login" className="hidden sm:block text-sm font-semibold text-[#6F6A63] transition-colors hover:text-[#25211C]">
           Accedi
         </Link>
+        <a href={installHref} className="hidden sm:flex h-9 items-center rounded-full border border-[#1E6B68]/20 bg-white px-4 text-[13px] font-bold text-[#1E6B68] transition-all hover:bg-[#DCE9E5]/40 active:scale-[0.97]">
+          {installLabel}
+        </a>
         <Link to="/register" className="flex h-9 items-center rounded-full bg-[#1E6B68] px-5 text-[13px] font-bold text-white transition-all hover:bg-[#16514F] active:scale-[0.97] shadow-sm">
           Apri l'app
         </Link>
@@ -202,7 +207,17 @@ function StickyHeader() {
 // 2. HERO
 // ═════════════════════════════════════════════════════════════════════════════
 
-function HeroSection() {
+function HeroSection({
+  installHref,
+  installLabel,
+  androidApkLink,
+  showIosHint,
+}: {
+  installHref: string
+  installLabel: string
+  androidApkLink: string | null
+  showIosHint: boolean
+}) {
   const fade = fadeProps()
 
   return (
@@ -214,30 +229,62 @@ function HeroSection() {
       <div className="relative mx-auto max-w-6xl px-6 lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
         {/* Text column */}
         <motion.div {...fade} className="text-center lg:text-left">
-          <span className="inline-block rounded-full border border-[#DDD4C8] bg-[#FBF8F3] px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1E6B68] mb-6 shadow-sm">
-            Piattaforma per il consenso chiaro e reciproco
-          </span>
+          <div className="mb-6 inline-flex flex-col items-center gap-3 lg:items-start">
+            <span className="inline-block rounded-full border border-[#DDD4C8] bg-[#FBF8F3] px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1E6B68] shadow-sm">
+              Piattaforma per il consenso chiaro e reciproco
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#1E6B68] px-4 py-2 text-[12px] font-bold text-white shadow-[0_10px_30px_rgba(30,107,104,0.18)]">
+              <Smartphone size={14} />
+              Installazione consigliata su smartphone
+            </span>
+          </div>
 
           <h1 className="text-[2rem] sm:text-[2.75rem] lg:text-[3.25rem] font-bold leading-[1.12] tracking-tight text-[#25211C] mb-6 font-serif">
-            Più chiarezza, più rispetto nelle interazioni che contano.
+            Installa l'app sul telefono e usala subito.
           </h1>
 
           <p className="mx-auto max-w-xl lg:mx-0 text-lg sm:text-xl leading-relaxed text-[#6F6A63] mb-8">
-            APP del Consenso aiuta due persone adulte a esprimere e confermare un consenso condiviso — con controllo reciproco, privacy essenziale e revoca sempre disponibile.
+            APP del Consenso è pensata per smartphone: Android con APK diretto, iPhone con installazione da Safari. La web app da browser resta disponibile, ma non è la modalità che consigliamo.
           </p>
 
+          <div className="mb-6 rounded-[28px] border border-[#1E6B68]/15 bg-white/85 p-4 shadow-[0_18px_40px_rgba(37,33,28,0.08)] backdrop-blur-sm sm:p-5">
+            <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
+              <a href={installHref} className="flex h-[56px] w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-[#1E6B68] px-8 text-base font-bold text-white transition-all hover:bg-[#16514F] active:scale-[0.97] shadow-[0_10px_30px_rgba(30,107,104,0.22)]">
+                {installLabel}
+                <ArrowRight size={18} />
+              </a>
+              <Link to="/register" className="flex h-[56px] w-full sm:w-auto items-center justify-center rounded-full border border-[#DDD4C8] bg-[#FBF8F3] px-7 text-base font-semibold text-[#25211C] transition-all hover:border-[#1E6B68]/30 hover:bg-white active:scale-[0.97]">
+                Usa la web app
+              </Link>
+            </div>
+            <div className="mt-4 grid gap-2 text-left sm:grid-cols-3">
+              <div className="rounded-2xl border border-[#DDD4C8] bg-[#FBF8F3] px-4 py-3">
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#1E6B68]">Android</p>
+                <p className="mt-1 text-sm font-semibold text-[#25211C]">{androidApkLink ? 'APK diretto pronto da scaricare' : 'Installazione da browser disponibile'}</p>
+              </div>
+              <div className="rounded-2xl border border-[#DDD4C8] bg-[#FBF8F3] px-4 py-3">
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#1E6B68]">iPhone</p>
+                <p className="mt-1 text-sm font-semibold text-[#25211C]">{showIosHint ? 'Aggiungila alla schermata Home adesso' : 'Installazione da Safari alla Home'}</p>
+              </div>
+              <div className="rounded-2xl border border-[#DDD4C8] bg-[#FBF8F3] px-4 py-3">
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#1E6B68]">Browser</p>
+                <p className="mt-1 text-sm font-semibold text-[#25211C]">Solo come alternativa rapida</p>
+              </div>
+            </div>
+          </div>
+
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start mb-5">
-            <Link to="/register" className="flex h-[52px] w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-[#1E6B68] px-8 text-base font-bold text-white transition-all hover:bg-[#16514F] active:scale-[0.97] shadow-[0_4px_20px_rgba(30,107,104,0.18)]">
-              Apri l'app
+            <a href="#installazione" className="flex h-[52px] w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-[#1E6B68]/20 bg-[#DCE9E5]/45 px-7 text-base font-semibold text-[#1E6B68] transition-all hover:bg-[#DCE9E5]/70 active:scale-[0.97]">
+              Vai alle istruzioni di installazione
               <ArrowRight size={18} />
-            </Link>
+            </a>
             <a href="#come-funziona" className="flex h-[52px] w-full sm:w-auto items-center justify-center rounded-full border border-[#DDD4C8] bg-white px-7 text-base font-semibold text-[#25211C] transition-all hover:bg-[#FBF8F3] hover:border-[#1E6B68]/30 active:scale-[0.97]">
               Scopri come funziona
             </a>
           </div>
 
           <p className="text-[13px] text-[#6F6A63]/80 mb-8 lg:mb-0">
-            Utilizzabile da smartphone, installabile in pochi secondi su iPhone e Android.
+            Per l'uso quotidiano consigliamo l'installazione sul telefono. La versione browser resta disponibile come accesso secondario.
           </p>
 
           {/* Trust pills — mobile horizontal scroll, desktop inline */}
@@ -491,16 +538,66 @@ function PrivacyTrustSection() {
 
 function AccessInstallSection({ showIosHint, androidApkLink }: { showIosHint: boolean; androidApkLink: string | null }) {
   return (
-    <section className="bg-[#FBF8F3] py-20 lg:py-28">
+    <section id="installazione" className="bg-[#FBF8F3] py-20 lg:py-28">
       <div className="mx-auto max-w-5xl px-6">
         <motion.div {...fadeProps()}>
           <h2 className="text-[1.75rem] sm:text-[2rem] font-bold tracking-tight text-[#25211C] mb-3 font-serif">
-            Inizia nel modo che preferisci
+            Installa l'app sullo smartphone
           </h2>
-          <p className="text-lg text-[#6F6A63] mb-10 max-w-xl">Accesso semplice e immediato, senza procedure complesse.</p>
+          <p className="text-lg text-[#6F6A63] mb-10 max-w-2xl">Il percorso consigliato è installarla sul telefono. Android ha il download APK diretto, iPhone si installa da Safari con pochi tocchi. La versione browser resta disponibile solo come opzione secondaria.</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr]">
+          <motion.div {...fadeProps(0.04)} className="rounded-[28px] border border-[#1E6B68]/15 bg-white p-7 shadow-[0_20px_50px_rgba(37,33,28,0.06)]">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#DCE9E5]">
+                <Smartphone size={22} className="text-[#1E6B68]" />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#1E6B68]">Scelta consigliata</p>
+                <h3 className="text-2xl font-bold text-[#25211C] font-serif">Android con APK diretto</h3>
+              </div>
+            </div>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-[#6F6A63]">
+              Scarichi il file, lo installi una volta e l'app resta sul telefono come accesso principale. È la modalità più immediata per chi usa Android.
+            </p>
+            {androidApkLink && (
+              <a href={androidApkLink} className="mt-6 inline-flex h-[56px] items-center justify-center gap-2 rounded-full bg-[#1E6B68] px-7 text-base font-bold text-white transition-all hover:bg-[#16514F] active:scale-[0.97] shadow-[0_10px_30px_rgba(30,107,104,0.22)]">
+                <Smartphone size={18} /> Scarica APK per Android
+              </a>
+            )}
+            <div className="mt-6 rounded-2xl border border-[#DDD4C8] bg-[#FBF8F3] px-5 py-4 text-sm text-[#6F6A63]">
+              Dopo il download, Android potrebbe chiederti di autorizzare l'installazione da questa sorgente. Poi l'app resta installata normalmente.
+            </div>
+          </motion.div>
+
+          <motion.div {...fadeProps(0.08)} className="rounded-[28px] border border-[#DDD4C8] bg-[#F1EBE2] p-7">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white">
+                <Apple size={22} className="text-[#1E6B68]" />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#1E6B68]">iPhone</p>
+                <h3 className="text-2xl font-bold text-[#25211C] font-serif">Installa da Safari</h3>
+              </div>
+            </div>
+            <p className="mt-5 text-base leading-relaxed text-[#6F6A63]">
+              Su iPhone non si scarica un APK: l'installazione consigliata è aggiungerla alla schermata Home per usarla come web app dedicata.
+            </p>
+            <ol className="mt-6 space-y-3 text-sm text-[#25211C]">
+              <li className="rounded-2xl border border-[#DDD4C8] bg-white px-4 py-3">1. Apri il sito in Safari</li>
+              <li className="rounded-2xl border border-[#DDD4C8] bg-white px-4 py-3">2. Tocca Condividi</li>
+              <li className="rounded-2xl border border-[#DDD4C8] bg-white px-4 py-3">3. Scegli Aggiungi a schermata Home</li>
+            </ol>
+            {showIosHint && (
+              <div className="mt-5 rounded-2xl border border-[#1E6B68]/20 bg-[#DCE9E5]/55 px-5 py-4 text-sm text-[#25211C]">
+                Sei già su iPhone: apri il menu Condividi di Safari e completa l'installazione adesso.
+              </div>
+            )}
+          </motion.div>
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {installCards.map((c, i) => (
             <motion.div key={c.title} {...fadeProps(i * 0.06)} className="rounded-2xl border border-[#DDD4C8] bg-white p-6 hover:shadow-sm transition-shadow">
               <div className="w-10 h-10 rounded-xl bg-[#DCE9E5] flex items-center justify-center mb-4">
@@ -514,12 +611,6 @@ function AccessInstallSection({ showIosHint, androidApkLink }: { showIosHint: bo
 
         {(showIosHint || androidApkLink) && (
           <div className="mt-8 flex flex-col gap-4">
-            {showIosHint && (
-              <div className="rounded-2xl border border-[#1E6B68]/20 bg-[#DCE9E5]/50 px-6 py-5">
-                <p className="text-sm font-semibold text-[#25211C]">iPhone rilevato</p>
-                <p className="mt-1 text-sm text-[#6F6A63]">Tocca condividi in Safari e poi <span className="font-bold text-[#25211C]">Aggiungi a schermata Home</span> per installare l'app.</p>
-              </div>
-            )}
             {androidApkLink && (
               <a href={androidApkLink} className="self-start inline-flex items-center gap-2 rounded-full border border-[#1E6B68]/30 bg-white px-6 py-3 text-sm font-semibold text-[#1E6B68] hover:bg-[#DCE9E5]/50 transition-colors">
                 <Smartphone size={16} /> Scarica APK per Android
@@ -617,7 +708,17 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
 // 12. CTA FINALE
 // ═════════════════════════════════════════════════════════════════════════════
 
-function FinalCTASection() {
+function FinalCTASection({
+  installHref,
+  installLabel,
+  androidApkLink,
+  showIosHint,
+}: {
+  installHref: string
+  installLabel: string
+  androidApkLink: string | null
+  showIosHint: boolean
+}) {
   return (
     <section className="bg-white py-16 lg:py-24">
       <div className="mx-auto max-w-3xl px-6">
@@ -625,17 +726,17 @@ function FinalCTASection() {
           <div className="pointer-events-none absolute top-0 right-0 h-48 w-48 -translate-y-1/3 translate-x-1/3 rounded-full bg-[#1E6B68]/8 blur-[50px]" />
 
           <h2 className="text-[1.5rem] sm:text-[2rem] font-bold text-[#25211C] mb-4 leading-tight relative z-10 font-serif">
-            Porta più chiarezza nelle interazioni che contano.
+            Installa l'app e usala dal telefono.
           </h2>
           <p className="text-[#6F6A63] mb-8 max-w-md mx-auto text-lg relative z-10">
-            Usa uno strumento pensato per adulti, progettato per il mobile e costruito intorno a reciprocità, controllo condiviso e riservatezza.
+            Android con APK diretto, iPhone con aggiunta alla schermata Home. La web app da browser resta disponibile, ma non è la modalità che consigliamo.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-3 relative z-10">
-            <Link to="/register" className="flex h-[52px] items-center justify-center rounded-full bg-[#1E6B68] px-8 text-base font-bold text-white hover:bg-[#16514F] transition-all active:scale-[0.97] shadow-sm">
-              Apri l'app
-            </Link>
+            <a href={installHref} className="flex h-[52px] items-center justify-center rounded-full bg-[#1E6B68] px-8 text-base font-bold text-white hover:bg-[#16514F] transition-all active:scale-[0.97] shadow-sm">
+              {installLabel}
+            </a>
             <Link to="/login" className="flex h-[52px] items-center justify-center rounded-full border border-[#DDD4C8] bg-white px-8 text-base font-semibold text-[#25211C] hover:bg-[#FBF8F3] transition-all active:scale-[0.97]">
-              Accedi
+              {androidApkLink ? 'Apri la web app' : showIosHint ? 'Apri da Safari' : 'Accedi dal browser'}
             </Link>
           </div>
         </motion.div>
