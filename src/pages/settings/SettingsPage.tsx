@@ -248,7 +248,7 @@ export function SettingsPage() {
           className="panel flex min-h-14 w-full items-center gap-3 rounded-2xl px-4 text-left text-danger transition active:scale-[0.99] disabled:opacity-50"
         >
           <LogOut size={18} />
-          <span className="text-sm font-semibold">{loggingOut ? 'Uscita in corso...' : 'Esci dall'account'}</span>
+          <span className="text-sm font-semibold">{loggingOut ? 'Uscita in corso...' : "Esci dall'account"}</span>
         </button>
 
         <button
