@@ -19,10 +19,11 @@ export function ScanQRPage() {
   const navigate = useNavigate()
   const { user } = useAuthStore()
   const { setPairedUser } = useSessionStore()
-  const scannerRef = useRef<{ clear: () => Promise<void> } | null>(null)
+  const scannerRef = useRef<import('html5-qrcode').Html5Qrcode | null>(null)
   const [payload, setPayload] = useState<z.infer<typeof qrSchema> | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [cameraError, setCameraError] = useState<string | null>(null)
 
   useEffect(() => {
     if (payload) return
@@ -30,47 +31,46 @@ export function ScanQRPage() {
     let active = true
 
     async function startScanner() {
-      const { Html5QrcodeScanner } = await import('html5-qrcode')
+      const { Html5Qrcode } = await import('html5-qrcode')
       if (!active) return
 
-      const scanner = new Html5QrcodeScanner(
-        'qr-reader',
-        {
-          fps: 10,
-          qrbox: { width: 260, height: 260 },
-          aspectRatio: 1,
-        },
-        false,
-      )
-
-      scanner.render(
-        async (decodedText) => {
-          try {
-            const parsed = qrSchema.safeParse(JSON.parse(decodedText))
-
-            if (!parsed.success || parsed.data.u === user?.id) {
-              setError('QR non valido o generato dal tuo account')
-              return
-            }
-
-            await scanner.clear()
-            setPayload(parsed.data)
-            setError(null)
-          } catch {
-            setError('QR non valido')
-          }
-        },
-        () => undefined,
-      )
-
+      const scanner = new Html5Qrcode('qr-reader')
       scannerRef.current = scanner
+
+      try {
+        await scanner.start(
+          { facingMode: 'environment' },
+          { fps: 10, qrbox: { width: 260, height: 260 } },
+          async (decodedText) => {
+            try {
+              const parsed = qrSchema.safeParse(JSON.parse(decodedText))
+
+              if (!parsed.success || parsed.data.u === user?.id) {
+                setError('QR non valido o generato dal tuo account')
+                return
+              }
+
+              await scanner.stop()
+              setPayload(parsed.data)
+              setError(null)
+            } catch {
+              setError('QR non valido')
+            }
+          },
+          () => undefined,
+        )
+      } catch {
+        if (active) {
+          setCameraError('Fotocamera non disponibile o permesso negato. Usa il codice numerico.')
+        }
+      }
     }
 
     void startScanner()
 
     return () => {
       active = false
-      void scannerRef.current?.clear().catch(() => undefined)
+      scannerRef.current?.stop().catch(() => undefined)
     }
   }, [payload, user?.id])
 
@@ -109,6 +109,7 @@ export function ScanQRPage() {
   function handleRescan() {
     setPayload(null)
     setError(null)
+    setCameraError(null)
   }
 
   return (
@@ -120,13 +121,28 @@ export function ScanQRPage() {
 
       <section className="space-y-3">
         <h1 className="text-[1.75rem] font-bold">Scansiona il QR</h1>
-        <p className="text-sm leading-6 text-text-secondary">Apri la fotocamera, punta il codice del partner e verifica il profilo prima di creare la sessione.</p>
+        <p className="text-sm leading-6 text-text-secondary">Punta la fotocamera sul QR del partner e verifica il profilo prima di creare la sessione.</p>
       </section>
 
       {!payload ? (
         <section className="panel rounded-[28px] px-4 py-4">
-          <div id="qr-reader" className="overflow-hidden rounded-[22px]" />
-          {error ? <p className="mt-4 text-sm text-danger">{error}</p> : null}
+          {cameraError ? (
+            <div className="space-y-4 py-6 text-center">
+              <p className="text-sm leading-6 text-text-secondary">{cameraError}</p>
+              <button
+                type="button"
+                onClick={() => navigate('/pairing/code')}
+                className="inline-flex min-h-12 items-center justify-center rounded-full bg-accent px-6 text-sm font-semibold text-white transition active:scale-[0.98]"
+              >
+                Usa il codice numerico
+              </button>
+            </div>
+          ) : (
+            <>
+              <div id="qr-reader" className="overflow-hidden rounded-[22px]" />
+              {error ? <p className="mt-4 text-sm text-danger">{error}</p> : null}
+            </>
+          )}
         </section>
       ) : (
         <section className="panel rounded-[28px] px-5 py-6 text-center">
