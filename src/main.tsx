@@ -10,6 +10,10 @@ if (!clerkPublishableKey) {
   throw new Error('Variabile Clerk mancante nel file .env.local')
 }
 
+window.addEventListener('vite:preloadError', () => {
+  window.location.reload()
+})
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ClerkProvider
