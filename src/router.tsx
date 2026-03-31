@@ -36,8 +36,8 @@ function RouteFallback() {
 export const router = createBrowserRouter([
   { path: '/', element: withSuspense(<WelcomePage />) },
   { path: '/welcome', element: <Navigate to="/" replace /> },
-  { path: '/login', element: withSuspense(<LoginPage />) },
-  { path: '/register', element: withSuspense(<RegisterPage />) },
+  { path: '/login/*', element: withSuspense(<LoginPage />) },
+  { path: '/register/*', element: withSuspense(<RegisterPage />) },
   {
     element: <AuthGuard />,
     children: [
