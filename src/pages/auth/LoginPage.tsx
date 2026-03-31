@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Eye, EyeOff, Lock, ShieldCheck } from 'lucide-react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
@@ -12,12 +12,16 @@ const loginSchema = z.object({
 
 export function LoginPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { user } = useAuthStore()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const confirmationEmail = searchParams.get('email')
+  const showCheckEmailHint = searchParams.get('check-email') === '1'
+  const showConfirmedHint = searchParams.get('confirmed') === '1'
 
   if (user) {
     return <Navigate to="/app" replace />
@@ -34,7 +38,11 @@ export function LoginPage() {
     setError(null)
     const { error: authError } = await supabase.auth.signInWithPassword(parsed.data)
     if (authError) {
-      setError('Email o password non corretti')
+      if (authError.message.toLowerCase().includes('email not confirmed')) {
+        setError('Devi prima confermare la tua email dal link ricevuto nella casella di posta')
+      } else {
+        setError('Email o password non corretti')
+      }
       setLoading(false)
       return
     }
@@ -63,6 +71,18 @@ export function LoginPage() {
         {/* Form */}
         <section className="flex flex-col gap-6">
           <form onSubmit={handleSubmit} className="space-y-4">
+            {showCheckEmailHint ? (
+              <div className="rounded-2xl border border-accent/20 bg-accent/10 px-4 py-3 text-sm text-text-primary">
+                Controlla la tua email{confirmationEmail ? ` (${confirmationEmail})` : ''} e apri il link di conferma per attivare l&apos;account.
+              </div>
+            ) : null}
+
+            {showConfirmedHint ? (
+              <div className="rounded-2xl border border-success/20 bg-success/10 px-4 py-3 text-sm text-text-primary">
+                Email confermata. Ora puoi accedere con le tue credenziali.
+              </div>
+            ) : null}
+
             {/* Email */}
             <div className="flex flex-col gap-2">
               <label className="pl-4 text-[11px] font-medium uppercase tracking-[0.02em] text-text-muted">

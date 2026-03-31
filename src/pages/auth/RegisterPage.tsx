@@ -64,10 +64,13 @@ export function RegisterPage() {
     setLoading(true)
     setError(null)
 
-    const { error: authError } = await supabase.auth.signUp({
+    const emailRedirectTo = `${window.location.origin}/login?confirmed=1`
+
+    const { data, error: authError } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        emailRedirectTo,
         data: {
           display_name: parsed.data.displayName,
           avatar_color: parsed.data.avatarColor,
@@ -81,7 +84,12 @@ export function RegisterPage() {
       return
     }
 
-    navigate('/app')
+    if (data.session) {
+      navigate('/app')
+      return
+    }
+
+    navigate(`/login?check-email=1&email=${encodeURIComponent(email)}`)
   }
 
   return (
