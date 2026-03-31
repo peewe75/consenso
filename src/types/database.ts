@@ -173,6 +173,16 @@ export interface Database {
           avatar_color: string
         }[]
       }
+      upsert_my_profile: {
+        Args: { p_display_name: string; p_avatar_color: string }
+        Returns: {
+          id: string
+          display_name: string
+          avatar_color: string
+          created_at: string
+          updated_at: string
+        }
+      }
     }
     Enums: Record<string, never>
     CompositeTypes: Record<string, never>

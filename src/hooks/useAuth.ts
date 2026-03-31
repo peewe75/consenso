@@ -1,44 +1,71 @@
 import { useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuth as useClerkAuth, useClerk, useUser } from '@clerk/clerk-react'
+import { setSupabaseAccessTokenGetter, supabase } from '@/lib/supabase'
+import { useAuthStore, type AuthUser } from '@/stores/authStore'
+import { useSessionStore } from '@/stores/sessionStore'
 
 async function fetchProfile(userId: string) {
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', userId)
-    .single()
+    .maybeSingle()
 
   if (error) throw error
   return data
 }
 
+function mapClerkUser(user: ReturnType<typeof useUser>['user']): AuthUser | null {
+  if (!user) return null
+
+  return {
+    id: user.id,
+    email: user.primaryEmailAddress?.emailAddress ?? null,
+    firstName: user.firstName ?? null,
+    lastName: user.lastName ?? null,
+  }
+}
+
 export function useAuthInit() {
-  const { setUser, setSession, setProfile, setLoading, reset } = useAuthStore()
+  const { isLoaded, userId, getToken } = useClerkAuth()
+  const { user } = useUser()
+  const { reset: resetSessionStore } = useSessionStore()
+  const { setUser, setProfile, setLoading, reset } = useAuthStore()
+
+  useEffect(() => {
+    setSupabaseAccessTokenGetter(async () => (await getToken()) ?? null)
+
+    return () => {
+      setSupabaseAccessTokenGetter(null)
+    }
+  }, [getToken])
 
   useEffect(() => {
     let active = true
 
     async function bootstrap() {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession()
+      if (!isLoaded) {
+        setLoading(true)
+        return
+      }
 
-        if (!active) return
-
-        setSession(session)
-        setUser(session?.user ?? null)
-
-        if (session?.user) {
-          const profile = await fetchProfile(session.user.id)
-          if (!active) return
-          setProfile(profile)
-        } else {
-          setProfile(null)
+      if (!userId || !user) {
+        if (active) {
+          reset()
+          resetSessionStore()
         }
+        return
+      }
+
+      setLoading(true)
+      setUser(mapClerkUser(user))
+
+      try {
+        const profile = await fetchProfile(userId)
+        if (!active) return
+        setProfile(profile ?? null)
       } catch {
-        if (active) reset()
+        if (active) setProfile(null)
       } finally {
         if (active) setLoading(false)
       }
@@ -46,38 +73,21 @@ export function useAuthInit() {
 
     void bootstrap()
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-
-      if (!session?.user) {
-        setProfile(null)
-        setLoading(false)
-        return
-      }
-
-      try {
-        const profile = await fetchProfile(session.user.id)
-        if (active) setProfile(profile)
-      } finally {
-        if (active) setLoading(false)
-      }
-    })
-
     return () => {
       active = false
-      subscription.unsubscribe()
     }
-  }, [reset, setLoading, setProfile, setSession, setUser])
+  }, [isLoaded, reset, resetSessionStore, setLoading, setProfile, setUser, user, userId])
 }
 
 export function useAuth() {
   const auth = useAuthStore()
+  const { signOut: clerkSignOut } = useClerk()
+  const { reset: resetSessionStore } = useSessionStore()
 
   async function signOut() {
-    await supabase.auth.signOut()
+    await clerkSignOut()
+    setSupabaseAccessTokenGetter(null)
+    resetSessionStore()
     auth.reset()
   }
 

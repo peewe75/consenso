@@ -56,7 +56,8 @@ Crea `.env.local` partendo da `.env.example`.
 
 ```env
 VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_SUPABASE_PUBLISHABLE_KEY=your-supabase-publishable-key
+VITE_CLERK_PUBLISHABLE_KEY=your-clerk-publishable-key
 VITE_ANDROID_APK_URL=
 VITE_GOOGLE_PLAY_URL=
 VITE_APP_STORE_URL=
@@ -67,6 +68,11 @@ Le tre variabili download sono opzionali:
 - `VITE_ANDROID_APK_URL`: link diretto al file APK
 - `VITE_GOOGLE_PLAY_URL`: URL pubblico della scheda Google Play
 - `VITE_APP_STORE_URL`: URL pubblico della scheda App Store
+
+Per l'autenticazione:
+
+- `VITE_SUPABASE_PUBLISHABLE_KEY`: chiave publishable di Supabase usata dal client con token Clerk
+- `VITE_CLERK_PUBLISHABLE_KEY`: chiave publishable del progetto Clerk
 
 Se lasciate vuote, la landing mostra i pulsanti come non ancora pubblicati.
 
@@ -97,6 +103,19 @@ Le migration si trovano in:
 - `supabase/migrations/001_initial_schema.sql`
 - `supabase/migrations/002_rls_policies.sql`
 - `supabase/migrations/003_functions.sql`
+- `supabase/migrations/007_migrate_auth_to_clerk.sql`
+
+La migrazione auth attuale usa:
+
+- Clerk per login, registrazione, sessione e verifica email
+- Supabase come database, RLS, Realtime ed Edge Functions
+
+Per collegare Clerk a Supabase:
+
+1. crea/configura il progetto Clerk
+2. usa `Connect with Supabase` dal dashboard Clerk
+3. aggiungi l'integrazione `Third-Party Auth > Clerk` nel progetto Supabase
+4. imposta in Clerk le redirect URLs per locale, Netlify production e preview
 
 Edge Function schedulabile:
 

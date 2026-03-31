@@ -139,8 +139,8 @@ const faqs = [
 // ═════════════════════════════════════════════════════════════════════════════
 
 export function WelcomePage() {
-  const { user } = useAuthStore()
-  if (user) return <Navigate to="/app" replace />
+  const { user, profile } = useAuthStore()
+  if (user) return <Navigate to={profile ? '/app' : '/onboarding/profile'} replace />
 
   const showIosHint = isIosSafariInstallPromptVisible()
   const androidApkLink = downloadLinks.find((i) => i.label === 'APK diretto')?.href ?? null

@@ -7,6 +7,7 @@ import { AppShell } from '@/components/layout/AppShell'
 const WelcomePage = lazy(() => import('@/pages/auth/WelcomePage').then((module) => ({ default: module.WelcomePage })))
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage').then((module) => ({ default: module.LoginPage })))
 const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage').then((module) => ({ default: module.RegisterPage })))
+const ProfileOnboardingPage = lazy(() => import('@/pages/onboarding/ProfileOnboardingPage').then((module) => ({ default: module.ProfileOnboardingPage })))
 const HomePage = lazy(() => import('@/pages/home/HomePage').then((module) => ({ default: module.HomePage })))
 const HistoryPage = lazy(() => import('@/pages/history/HistoryPage').then((module) => ({ default: module.HistoryPage })))
 const SettingsPage = lazy(() => import('@/pages/settings/SettingsPage').then((module) => ({ default: module.SettingsPage })))
@@ -40,6 +41,7 @@ export const router = createBrowserRouter([
   {
     element: <AuthGuard />,
     children: [
+      { path: '/onboarding/profile', element: withSuspense(<ProfileOnboardingPage />) },
       {
         path: '/app',
         element: <AppShell />,

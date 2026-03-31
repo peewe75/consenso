@@ -10,7 +10,7 @@ import { useSessionStore } from '@/stores/sessionStore'
 
 const qrSchema = z.object({
   c: z.string().regex(/^\d{6}$/),
-  u: z.string().uuid(),
+  u: z.string().min(1),
   n: z.string().min(2),
   a: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
 })
