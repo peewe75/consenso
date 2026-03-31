@@ -1,0 +1,230 @@
+# APP del Consenso — Contesto per Antigravity
+
+## Cos'è l'app
+
+**APP del Consenso** è una Progressive Web App (PWA) mobile-first che permette a due adulti di documentare reciprocamente il proprio consenso consapevole in tempo reale. Il flusso avviene tramite pairing di prossimità (QR code o codice numerico), conferma condivisa con press-and-hold, e revoca immediata con propagazione realtime all'altro partecipante.
+
+**Principi cardine:**
+- Privacy by design: nessun audio, documento d'identità o metadato superfluo
+- Reciprocità: entrambi i partecipanti devono confermare attivamente
+- Revocabilità: chiunque può revocare in qualsiasi momento durante la sessione
+- Pseudonimia: gli utenti sono identificati solo da un display name scelto al signup
+
+L'app **non ha valore legale probatorio** — ha valore documentale/comunicativo.
+
+---
+
+## Stack tecnologico
+
+| Layer | Tecnologia | Versione |
+|-------|-----------|---------|
+| Frontend | React + TypeScript | 18.3 / 5.9 |
+| Build | Vite | 8 |
+| Styling | Tailwind CSS v4 (via @tailwindcss/vite) | 4.2 |
+| Routing | React Router | 6.30 |
+| State | Zustand | 5 |
+| Animazioni | Framer Motion | 12.38 |
+| QR | qrcode.react + html5-qrcode | 4.2 / 2.3.8 |
+| Auth | Clerk | 5.61 |
+| Database | Supabase (PostgreSQL + RLS + Realtime) | 2.100 |
+| Edge Functions | Supabase Edge Functions (Deno) | — |
+| Mobile | Capacitor | 8.3 |
+| PWA | vite-plugin-pwa + Workbox | 1.2 / 7.4 |
+| Deploy | Netlify | — |
+
+---
+
+## Design System
+```
+Background:        #0F0F14   (dark, sempre attivo — NO light mode)
+Surface card:      #1A1A24
+Surface card 2:    #22223A
+Bordi:             #2D2D42
+Accent (primary):  #6366F1  (indigo — fiducia)
+Success:           #10B981  (emerald — consenso attivo)
+Warning:           #F59E0B  (amber — in scadenza)
+Danger:            #EF4444  (rosso — revoca)
+Testo primario:    #F8FAFC
+Testo secondario:  #94A3B8
+Font:              Inter (Google Fonts, weight 400/500/700)
+Border radius:     8px / 12px / 16px / 24px / 9999px
+```
+
+**Regole UX critiche:**
+- Azioni distruttive (conferma/revoca) → **press-and-hold 600ms**, non semplice tap
+- `active:scale-[0.98]` su tutti i bottoni (feedback touch)
+- `-webkit-tap-highlight-color: transparent` ovunque
+- `overscroll-behavior: none` sul body
+- Safe area iOS con `env(safe-area-inset-*)` su tutti i layout
+- `viewport-fit=cover` nel meta viewport
+
+---
+
+## Struttura directory
+```
+src/
+├── components/
+│   ├── auth/AuthGuard.tsx            ← protegge rotte autenticate
+│   ├── layout/AppShell.tsx           ← layout authenticated con bottom nav
+│   ├── layout/BottomNav.tsx          ← Home / Storico / Profilo
+│   └── session/ConsentButton.tsx     ← press-and-hold con SVG progress ring
+├── hooks/
+│   ├── useAuth.ts                    ← useAuthInit + useAuth (Clerk→Supabase bridge)
+│   ├── useSession.ts                 ← load/confirm/revoke session
+│   ├── useRealtime.ts               ← Supabase Realtime subscription
+│   └── useTimer.ts                   ← countdown da expires_at
+├── lib/
+│   ├── supabase.ts                   ← createClient con Clerk token injection
+│   ├── clerk.ts                      ← Clerk UI appearance config
+│   ├── crypto.ts                     ← sha256 via Web Crypto API
+│   ├── downloadLinks.ts             ← APK/Play Store/App Store URLs da env
+│   └── utils.ts                      ← cn, formatCountdown, initialsFromName
+├── pages/
+│   ├── auth/WelcomePage.tsx          ← landing pubblica
+│   ├── auth/LoginPage.tsx            ← Clerk sign-in
+│   ├── auth/RegisterPage.tsx         ← Clerk sign-up
+│   ├── onboarding/ProfileOnboardingPage.tsx  ← setup display_name + avatar_color
+│   ├── home/HomePage.tsx             ← dashboard autenticata
+│   ├── pairing/PairingPage.tsx       ← hub scelta metodo pairing
+│   ├── pairing/ShowQRPage.tsx        ← genera QR + codice 6 cifre (10 min expiry)
+│   ├── pairing/ScanQRPage.tsx        ← scansiona QR partner
+│   ├── pairing/EnterCodePage.tsx     ← 6 digit boxes con focus auto
+│   ├── session/SessionPage.tsx       ← sessione attiva con ConsentButton
+│   ├── history/HistoryPage.tsx       ← storico con filtri
+│   └── settings/SettingsPage.tsx     ← profilo + logout + GDPR placeholder
+├── stores/
+│   ├── authStore.ts                  ← Zustand: user, profile, loading
+│   └── sessionStore.ts               ← Zustand: currentSession, pairedUser
+└── types/
+    ├── database.ts                   ← Database interface per Supabase typed client
+    └── session.ts                    ← SessionWithParticipants, ParticipantWithProfile
+supabase/
+├── migrations/
+│   ├── 001_initial_schema.sql
+│   ├── 002_rls_policies.sql
+│   ├── 003_functions.sql
+│   └── 007_migrate_auth_to_clerk.sql  ← migrazione da Supabase Auth a Clerk
+└── functions/
+    └── expire-sessions/index.ts       ← Edge Function Deno per scadere sessioni
+```
+
+---
+
+## Database schema (sintesi)
+
+### Tabelle principali
+
+**`profiles`** — identità utente (sincronizzata con Clerk)
+- `id TEXT PRIMARY KEY` (Clerk user ID, non UUID)
+- `display_name TEXT` (2-30 chars)
+- `avatar_color TEXT` (hex)
+
+**`pairing_codes`** — codici temporanei di pairing
+- `code TEXT UNIQUE` (6 cifre, regex `^\d{6}$`)
+- `expires_at TIMESTAMPTZ` (10 minuti dall'emissione)
+- `used_at TIMESTAMPTZ` (NULL = disponibile)
+
+**`consent_sessions`** — sessioni di consenso
+- `status TEXT` (pending → active → confirmed | revoked | expired)
+- `expires_at TIMESTAMPTZ` (5 ore dall'inizio)
+- `integrity_hash TEXT` (SHA-256 partecipanti + timestamp)
+- `participant_count INT`
+- `revoked_by TEXT` (FK a profiles.id)
+
+**`consent_participants`** — partecipanti per sessione
+- `role TEXT` (initiator | participant)
+- UNIQUE(session_id, user_id)
+
+**`consent_confirmations`** — audit trail immutabile
+- `action TEXT` (confirmed | revoked)
+- `action_hash TEXT` (SHA-256 per integrità)
+
+**`v_current_consent_status`** — view: ultimo stato per (session_id, user_id)
+
+### RPC Functions disponibili (SECURITY DEFINER)
+- `upsert_my_profile(display_name, avatar_color)` → void
+- `create_consent_session(participant_ids[], integrity_hash)` → session_id
+- `create_session_from_pairing_code(code, integrity_hash)` → session_id
+- `record_consent_action(session_id, action, action_hash)` → void
+- `get_session_profiles(session_id)` → rows con display_name + avatar_color
+- `get_session_metrics(session_id)` → {confirmed_count, any_revoked}
+- `generate_pairing_code()` → TEXT (6 cifre univoche)
+- `expire_stale_sessions()` → INT (count scadute)
+
+---
+
+## Autenticazione (Clerk + Supabase)
+
+Il sistema usa **Clerk** come identity provider e **Supabase** come database.
+
+**Flusso:**
+1. Utente si autentica su Clerk → ottiene JWT Clerk
+2. `setSupabaseAccessTokenGetter()` in `src/lib/supabase.ts` inietta il token Clerk nelle richieste Supabase
+3. RLS policies usano `requesting_user_id()` (estratto dal JWT Clerk) per autorizzare
+4. Tutti i `profiles.id` sono Clerk user IDs (TEXT, non UUID)
+
+**File chiave auth:**
+- `src/lib/supabase.ts` — client con dynamic token getter
+- `src/hooks/useAuth.ts` — `useAuthInit()` bridge Clerk→Supabase + fetch profilo
+- `src/stores/authStore.ts` — Zustand store: `{ user, profile, loading }`
+- `src/main.tsx` — ClerkProvider con redirect URLs
+
+---
+
+## Routing
+
+| Route | Protezione | Pagina |
+|-------|-----------|--------|
+| `/` | pubblica | WelcomePage (landing) |
+| `/login` | pubblica | LoginPage (Clerk) |
+| `/register` | pubblica | RegisterPage (Clerk) |
+| `/onboarding/profile` | auth | ProfileOnboardingPage |
+| `/app` | auth | HomePage |
+| `/app/history` | auth | HistoryPage |
+| `/app/settings` | auth | SettingsPage |
+| `/pairing` | auth | PairingPage |
+| `/pairing/show` | auth | ShowQRPage |
+| `/pairing/scan` | auth | ScanQRPage |
+| `/pairing/code` | auth | EnterCodePage |
+| `/session/:id` | auth | SessionPage |
+
+---
+
+## Variabili d'ambiente
+```env
+VITE_SUPABASE_URL=https://aivmwfehpjlchqkbulcy.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=...        ← chiave publishable Supabase (client-safe)
+VITE_CLERK_PUBLISHABLE_KEY=...           ← chiave publishable Clerk (client-safe)
+VITE_ANDROID_APK_URL=                    ← opzionale
+VITE_GOOGLE_PLAY_URL=                    ← opzionale
+VITE_APP_STORE_URL=                      ← opzionale
+```
+
+---
+
+## Deploy
+
+- **Hosting:** Netlify (deploy automatico da GitHub main branch)
+- **Build:** `npm run build` → `dist/`
+- **SPA routing:** `netlify.toml` redirige `/*` → `/index.html`
+- **Android:** Capacitor + Gradle (`appId: it.consenso.app`)
+- **PWA:** service worker con Workbox, auto-update
+
+---
+
+## Comandi utili
+```bash
+npm run dev          # dev server locale
+npm run build        # build produzione
+npm run lint         # lint TypeScript
+
+# Android
+npm run build && npx cap sync android
+cd android && gradlew.bat assembleRelease
+```
+
+---
+
+## Stato attuale (pre-lancio)
+
+L'MVP è funzionante e deployato. Mancano alcune implementazioni critiche pre-lancio descritte nel file ANTIGRAVITY_PROMPT.md.

@@ -1,0 +1,293 @@
+# Antigravity Implementation Prompt — APP del Consenso
+
+## Contesto
+
+Stai lavorando su **APP del Consenso**, una PWA React/TypeScript.
+Leggi prima `ANTIGRAVITY_CONTEXT.md` per capire l'architettura completa.
+
+LLM consigliati: **Gemini 3.1** per esplorazione/pianificazione, **Claude Opus 4.6** per implementazione critica.
+
+---
+
+## TASK 1 — BLOCCANTE: Rimuovere `.env.local` dal git
+
+**Problema:** `.env.local` con chiavi reali è tracciato da git.
+**File:** `.gitignore` (già presente alla riga `.env.local` — verificare che sia effettivo)
+
+**Azioni:**
+```bash
+git rm --cached .env.local
+git add .gitignore
+git commit -m "chore: remove .env.local from git tracking"
+```
+
+Verificare che `.gitignore` contenga la riga `.env.local`. Se non c'è, aggiungerla.
+
+---
+
+## TASK 2 — BLOCCANTE: Implementare eliminazione account (GDPR)
+
+**Problema:** `src/pages/settings/SettingsPage.tsx` ha un pulsante non funzionante:
+```tsx
+<button className="...">
+  <Trash2 size={18} />
+  <span>Elimina account (placeholder GDPR)</span>
+</button>
+```
+
+**Cosa implementare:**
+
+### 2a. Edge Function Supabase: `delete-account`
+
+Crea `supabase/functions/delete-account/index.ts`:
+- Riceve JWT Clerk nell'header Authorization
+- Estrae `requesting_user_id()` dal JWT
+- Cancella in cascata (nell'ordine):
+  1. `consent_confirmations` dove `user_id = uid`
+  2. `consent_participants` dove `user_id = uid`
+  3. `pairing_codes` dove `creator_id = uid`
+  4. `consent_sessions` rimaste orfane (senza altri partecipanti)
+  5. `profiles` dove `id = uid`
+- Chiama Clerk Backend API `DELETE /v1/users/{user_id}` per eliminare l'utente da Clerk
+  - Richiede `CLERK_SECRET_KEY` come secret Supabase
+- Risponde `{ success: true }` oppure errore strutturato
+
+### 2b. SettingsPage.tsx — modale di conferma doppia
+
+Sostituire il pulsante placeholder con:
+1. Click → apre modale di conferma
+2. Modale chiede di digitare `"ELIMINA"` per confermare
+3. Solo se corretto → chiama l'Edge Function
+4. Dopo eliminazione → `signOut()` + `navigate('/')`
+
+**Referenze:**
+- `src/pages/settings/SettingsPage.tsx` — file da modificare
+- `src/hooks/useAuth.ts` — `signOut()` disponibile
+- `supabase/functions/expire-sessions/index.ts` — usa come template per la nuova Edge Function
+
+---
+
+## TASK 3 — BLOCCANTE: Schedulare `expire-sessions`
+
+**Problema:** `supabase/functions/expire-sessions/index.ts` esiste ma non è schedulata.
+
+**Azioni:**
+
+### Opzione A — Supabase Cron (consigliata)
+Nel dashboard Supabase → Database → Extensions → abilitare `pg_cron`
+Poi in SQL Editor:
+```sql
+SELECT cron.schedule(
+  'expire-sessions-hourly',
+  '0 * * * *',  -- ogni ora
+  $$
+  SELECT net.http_post(
+    url := current_setting('app.supabase_url') || '/functions/v1/expire-sessions',
+    headers := jsonb_build_object(
+      'Authorization', 'Bearer ' || current_setting('app.service_role_key'),
+      'Content-Type', 'application/json'
+    ),
+    body := '{}'::jsonb
+  );
+  $$
+);
+```
+
+### Opzione B — Netlify Scheduled Function
+Crea `netlify/functions/expire-sessions-cron.ts`:
+```typescript
+import type { Config } from '@netlify/functions'
+
+export default async function handler() {
+  const res = await fetch(`${process.env.SUPABASE_URL}/functions/v1/expire-sessions`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}` },
+  })
+  return { statusCode: res.ok ? 200 : 500 }
+}
+
+export const config: Config = { schedule: '@hourly' }
+```
+
+Aggiungere in `.env.local` (e in Netlify env vars):
+```
+SUPABASE_SERVICE_ROLE_KEY=...
+```
+
+---
+
+## TASK 4 — IMPORTANTE: Modifica profilo post-onboarding
+
+**Problema:** `src/pages/settings/SettingsPage.tsx` mostra il profilo ma non permette di modificarlo.
+
+**Cosa implementare:**
+- Aggiungere stato `editing: boolean` alla pagina
+- Pulsante "Modifica" sull'avatar/nome → apre form inline
+- Form: input `display_name` (2-30 chars, validazione Zod già in `ProfileOnboardingPage`)
+- Color picker per `avatar_color` (stessa palette di `ProfileOnboardingPage.tsx`)
+- Submit chiama `supabase.rpc('upsert_my_profile', { display_name, avatar_color })`
+- Aggiorna `authStore` con il profilo aggiornato
+
+**Referenze:**
+- `src/pages/onboarding/ProfileOnboardingPage.tsx` — riusa la stessa logica di form e colori
+- `src/stores/authStore.ts` — `setProfile(profile)` per aggiornare lo store
+- RPC `upsert_my_profile()` già disponibile nel DB
+
+---
+
+## TASK 5 — IMPORTANTE: Rate limiting codici pairing
+
+**Problema:** `generate_pairing_code()` in `supabase/migrations/003_functions.sql` non ha rate limiting.
+
+**Azione — Nuova migration SQL:**
+
+Crea `supabase/migrations/008_rate_limiting.sql`:
+```sql
+-- Tabella tracking tentativi per user
+CREATE TABLE IF NOT EXISTS public.pairing_rate_limits (
+  user_id     TEXT NOT NULL,
+  window_start TIMESTAMPTZ NOT NULL DEFAULT date_trunc('minute', NOW()),
+  attempt_count INT NOT NULL DEFAULT 1,
+  PRIMARY KEY (user_id, window_start)
+);
+
+-- Funzione con rate limit integrato
+CREATE OR REPLACE FUNCTION public.generate_pairing_code_rate_limited()
+RETURNS TEXT LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+DECLARE
+  v_uid TEXT := requesting_user_id();
+  v_window TIMESTAMPTZ := date_trunc('minute', NOW());
+  v_count INT;
+  v_code TEXT;
+BEGIN
+  -- Max 5 generazioni per minuto per utente
+  INSERT INTO pairing_rate_limits (user_id, window_start, attempt_count)
+  VALUES (v_uid, v_window, 1)
+  ON CONFLICT (user_id, window_start)
+  DO UPDATE SET attempt_count = pairing_rate_limits.attempt_count + 1
+  RETURNING attempt_count INTO v_count;
+
+  IF v_count > 5 THEN
+    RAISE EXCEPTION 'Troppi tentativi. Attendi un minuto.';
+  END IF;
+
+  RETURN generate_pairing_code();
+END; $$;
+
+GRANT EXECUTE ON FUNCTION public.generate_pairing_code_rate_limited() TO authenticated;
+```
+
+Aggiornare `src/pages/pairing/ShowQRPage.tsx` per chiamare la nuova funzione via RPC.
+
+---
+
+## TASK 6 — IMPORTANTE: Retry logic per confirm/revoke
+
+**Problema:** `src/hooks/useSession.ts` — le funzioni `confirmConsent()` e `revokeConsent()` non hanno retry in caso di errore rete transitorio.
+
+**Implementazione:**
+
+Crea `src/lib/retry.ts`:
+```typescript
+export async function withRetry<T>(
+  fn: () => Promise<T>,
+  { retries = 2, delayMs = 500 }: { retries?: number; delayMs?: number } = {}
+): Promise<T> {
+  let lastError: unknown
+  for (let i = 0; i <= retries; i++) {
+    try {
+      return await fn()
+    } catch (err) {
+      lastError = err
+      if (i < retries) await new Promise(r => setTimeout(r, delayMs * (i + 1)))
+    }
+  }
+  throw lastError
+}
+```
+
+Modificare `src/hooks/useSession.ts`:
+- Wrappare `supabase.rpc('record_consent_action', ...)` con `withRetry(..., { retries: 2, delayMs: 500 })`
+- Mostrare un indicatore visivo "Riprovando..." durante i retry
+
+---
+
+## TASK 7 — NICE-TO-HAVE: Error tracking con Sentry
+
+**Problema:** nessun monitoraggio errori in produzione.
+
+**Implementazione:**
+```bash
+npm install @sentry/react
+```
+
+In `src/main.tsx`, prima del `createRoot`:
+```typescript
+import * as Sentry from '@sentry/react'
+
+Sentry.init({
+  dsn: import.meta.env.VITE_SENTRY_DSN,
+  integrations: [Sentry.browserTracingIntegration()],
+  tracesSampleRate: 0.2,
+  enabled: import.meta.env.PROD,
+})
+```
+
+Aggiungere `VITE_SENTRY_DSN=` a `.env.example`.
+
+---
+
+## TASK 8 — NICE-TO-HAVE: Modifica profilo — color picker avatar
+
+Vedi Task 4 — parte della stessa implementazione.
+
+---
+
+## Ordine di esecuzione consigliato
+
+1. **Task 1** — git cleanup (5 min, zero rischi)
+2. **Task 3** — scheduling expire-sessions (15 min)
+3. **Task 2** — GDPR delete account (60-90 min, più critico)
+4. **Task 4** — modifica profilo (30-45 min)
+5. **Task 6** — retry logic (20-30 min)
+6. **Task 5** — rate limiting pairing (30 min)
+7. **Task 7** — Sentry (15 min)
+
+---
+
+## Verifica post-implementazione
+
+### Task 1
+```bash
+git log --all --full-history -- .env.local
+# deve mostrare solo il commit di rimozione
+```
+
+### Task 2 (GDPR)
+- Creare account test → eseguire eliminazione → verificare che `profiles`, sessioni e conferme siano rimossi da Supabase
+- Verificare che l'utente non esista più su Clerk dashboard
+
+### Task 3 (scheduling)
+- Attendere un'ora dopo deploy → controllare log Edge Function in Supabase → deve mostrare `{ expired: N, ran_at: ... }`
+
+### Task 4 (modifica profilo)
+- Modificare display_name → ricaricare app → nome aggiornato ovunque
+- Modificare avatar_color → avatar aggiornato in SettingsPage e nelle sessioni
+
+### Task 6 (retry)
+- Disabilitare rete durante confirm → deve riprovare 2 volte → poi mostrare errore
+
+---
+
+## File da creare/modificare
+
+| File | Task | Tipo |
+|------|------|------|
+| `.gitignore` | 1 | modifica |
+| `supabase/functions/delete-account/index.ts` | 2 | nuovo |
+| `src/pages/settings/SettingsPage.tsx` | 2, 4 | modifica |
+| `supabase/migrations/008_rate_limiting.sql` | 5 | nuovo |
+| `src/lib/retry.ts` | 6 | nuovo |
+| `src/hooks/useSession.ts` | 6 | modifica |
+| `src/main.tsx` | 7 | modifica |
+| `netlify/functions/expire-sessions-cron.ts` | 3 | nuovo (opz.) |
