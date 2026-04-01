@@ -128,6 +128,7 @@ export function SessionPage() {
             <ParticipantRow
               name={`${myParticipant.profile.display_name} (tu)`}
               color={myParticipant.profile.avatar_color}
+              avatarUrl={myParticipant.profile.avatar_url}
               statusLabel={
                 myParticipant.currentStatus === 'confirmed'
                   ? 'Hai confermato'
@@ -154,6 +155,7 @@ export function SessionPage() {
               key={p.id}
               name={p.profile.display_name}
               color={p.profile.avatar_color}
+              avatarUrl={p.profile.avatar_url}
               statusLabel="Privato"
               statusClass="bg-surface text-text-muted border-border"
               caption="Mostriamo solo il conteggio aggregato delle conferme."
@@ -319,24 +321,34 @@ export function SessionPage() {
 function ParticipantRow({
   name,
   color,
+  avatarUrl,
   statusLabel,
   statusClass,
   caption,
 }: {
   name: string
   color: string
+  avatarUrl: string | null
   statusLabel: string
   statusClass: string
   caption: string
 }) {
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-3 py-3">
-      <div
-        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-base font-bold text-white shadow-soft"
-        style={{ backgroundColor: color }}
-      >
-        {initialsFromName(name)}
-      </div>
+      {avatarUrl ? (
+        <img
+          src={avatarUrl}
+          alt={name}
+          className="h-12 w-12 shrink-0 rounded-2xl object-cover shadow-soft"
+        />
+      ) : (
+        <div
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-base font-bold text-white shadow-soft"
+          style={{ backgroundColor: color }}
+        >
+          {initialsFromName(name)}
+        </div>
+      )}
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-semibold text-text-primary">{name}</p>
         <p className="mt-0.5 text-xs leading-5 text-text-muted">{caption}</p>

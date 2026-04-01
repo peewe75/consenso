@@ -33,11 +33,14 @@ function RouteFallback() {
   )
 }
 
+const PreviewGallery = lazy(() => import('@/pages/demo/PreviewGallery').then((module) => ({ default: module.PreviewGallery })))
+
 export const router = createBrowserRouter([
   { path: '/', element: withSuspense(<WelcomePage />) },
   { path: '/welcome', element: <Navigate to="/" replace /> },
   { path: '/login/*', element: withSuspense(<LoginPage />) },
   { path: '/register/*', element: withSuspense(<RegisterPage />) },
+  { path: '/preview', element: withSuspense(<PreviewGallery />) },
   {
     element: <AuthGuard />,
     children: [

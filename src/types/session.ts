@@ -11,12 +11,14 @@ export interface PairingPayload {
   u: string
   n: string
   a: string
+  i?: string | null
 }
 
 export interface PairingPartnerProfile {
   id: string
   display_name: string
   avatar_color: string
+  avatar_url: string | null
 }
 
 export interface ParticipantWithProfile extends ConsentParticipant {

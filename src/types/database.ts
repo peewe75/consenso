@@ -8,6 +8,7 @@ export interface Database {
           id: string
           display_name: string
           avatar_color: string
+          avatar_url: string | null
           created_at: string
           updated_at: string
         }
@@ -15,12 +16,14 @@ export interface Database {
           id: string
           display_name: string
           avatar_color?: string
+          avatar_url?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           display_name?: string
           avatar_color?: string
+          avatar_url?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -171,14 +174,16 @@ export interface Database {
           user_id: string
           display_name: string
           avatar_color: string
+          avatar_url: string | null
         }[]
       }
       upsert_my_profile: {
-        Args: { p_display_name: string; p_avatar_color: string }
+        Args: { p_display_name: string; p_avatar_color: string; p_avatar_url?: string | null }
         Returns: {
           id: string
           display_name: string
           avatar_color: string
+          avatar_url: string | null
           created_at: string
           updated_at: string
         }

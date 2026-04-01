@@ -13,6 +13,7 @@ const qrSchema = z.object({
   u: z.string().min(1),
   n: z.string().min(2),
   a: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+  i: z.string().url().nullable().optional(),
 })
 
 export function ScanQRPage() {
@@ -97,6 +98,7 @@ export function ScanQRPage() {
         id: payload.u,
         display_name: payload.n,
         avatar_color: payload.a,
+        avatar_url: payload.i ?? null,
       })
 
       navigate(`/session/${sessionId}`)
@@ -146,9 +148,13 @@ export function ScanQRPage() {
         </section>
       ) : (
         <section className="panel rounded-[28px] px-5 py-6 text-center">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[24px] text-3xl font-bold text-white" style={{ backgroundColor: payload.a }}>
-            {initialsFromName(payload.n)}
-          </div>
+          {payload.i ? (
+            <img src={payload.i} alt={payload.n} className="mx-auto h-20 w-20 rounded-[24px] object-cover" />
+          ) : (
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[24px] text-3xl font-bold text-white" style={{ backgroundColor: payload.a }}>
+              {initialsFromName(payload.n)}
+            </div>
+          )}
           <h2 className="mt-4 text-xl font-semibold">{payload.n}</h2>
           <p className="mt-2 text-sm leading-6 text-text-secondary">Controlla che il profilo mostrato corrisponda alla persona accanto a te, poi conferma per iniziare la sessione.</p>
 

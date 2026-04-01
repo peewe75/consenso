@@ -7,8 +7,7 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { useAuthStore } from '@/stores/authStore'
 import { cn, initialsFromName } from '@/lib/utils'
-
-const AVATAR_COLORS = ['#6366F1', '#8B5CF6', '#EC4899', '#10B981', '#F59E0B', '#3B82F6', '#EF4444', '#14B8A6']
+import { AvatarPicker } from '@/components/profile/AvatarPicker'
 
 const profileSchema = z.object({
   displayName: z
@@ -21,7 +20,7 @@ const profileSchema = z.object({
 
 export function SettingsPage() {
   const navigate = useNavigate()
-  const { profile, signOut } = useAuth()
+  const { user, profile, signOut } = useAuth()
   const { setProfile } = useAuthStore()
   const { getToken } = useClerkAuth()
 
@@ -38,6 +37,7 @@ export function SettingsPage() {
   const [editing, setEditing] = useState(false)
   const [editName, setEditName] = useState(profile?.display_name ?? '')
   const [editColor, setEditColor] = useState(profile?.avatar_color ?? '#6366F1')
+  const [editAvatarUrl, setEditAvatarUrl] = useState<string | null>(profile?.avatar_url ?? null)
   const [savingProfile, setSavingProfile] = useState(false)
   const [profileError, setProfileError] = useState<string | null>(null)
 
@@ -82,6 +82,7 @@ export function SettingsPage() {
   function startEditing() {
     setEditName(profile?.display_name ?? '')
     setEditColor(profile?.avatar_color ?? '#6366F1')
+    setEditAvatarUrl(profile?.avatar_url ?? null)
     setProfileError(null)
     setEditing(true)
   }
@@ -104,6 +105,7 @@ export function SettingsPage() {
     const { error } = await supabase.rpc('upsert_my_profile', {
       p_display_name: parsed.data.displayName,
       p_avatar_color: parsed.data.avatarColor,
+      p_avatar_url: editAvatarUrl,
     })
 
     if (error) {
@@ -113,7 +115,12 @@ export function SettingsPage() {
     }
 
     if (profile) {
-      setProfile({ ...profile, display_name: parsed.data.displayName, avatar_color: parsed.data.avatarColor })
+      setProfile({
+        ...profile,
+        display_name: parsed.data.displayName,
+        avatar_color: parsed.data.avatarColor,
+        avatar_url: editAvatarUrl,
+      })
     }
     setSavingProfile(false)
     setEditing(false)
@@ -130,15 +137,16 @@ export function SettingsPage() {
       <section className="panel rounded-[28px] px-5 py-6">
         {editing ? (
           <div className="space-y-5">
-            {/* Avatar preview */}
-            <div className="flex justify-center">
-              <div
-                className="flex h-20 w-20 items-center justify-center rounded-[24px] text-3xl font-bold text-white shadow-sm"
-                style={{ backgroundColor: editColor }}
-              >
-                {initialsFromName(editName || '?')}
-              </div>
-            </div>
+            {/* Avatar picker */}
+            <AvatarPicker
+              userId={user?.id ?? ''}
+              displayName={editName}
+              avatarColor={editColor}
+              avatarUrl={editAvatarUrl}
+              onColorChange={setEditColor}
+              onAvatarUrlChange={setEditAvatarUrl}
+              size="md"
+            />
 
             {/* Display name input */}
             <label className="block space-y-2">
@@ -154,26 +162,6 @@ export function SettingsPage() {
               />
             </label>
 
-            {/* Color picker */}
-            <div className="space-y-3">
-              <span className="text-sm font-medium text-text-secondary">Colore avatar</span>
-              <div className="grid grid-cols-4 gap-3">
-                {AVATAR_COLORS.map((color) => (
-                  <button
-                    key={color}
-                    type="button"
-                    onClick={() => setEditColor(color)}
-                    className={cn(
-                      'flex min-h-11 items-center justify-center rounded-2xl border border-border shadow-sm transition active:scale-[0.98]',
-                      editColor === color && 'ring-2 ring-accent ring-offset-2 ring-offset-background',
-                    )}
-                    style={{ backgroundColor: color }}
-                    aria-label={`Colore ${color}`}
-                  />
-                ))}
-              </div>
-            </div>
-
             {profileError && (
               <p className="rounded-xl border border-danger/20 bg-danger/10 px-3 py-2 text-sm text-danger">{profileError}</p>
             )}
@@ -182,7 +170,7 @@ export function SettingsPage() {
             <div className="flex gap-3">
               <button
                 type="button"
-                onClick={handleSaveProfile}
+                onClick={() => void handleSaveProfile()}
                 disabled={savingProfile}
                 className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-full bg-accent text-sm font-semibold text-white transition active:scale-[0.98] disabled:opacity-50"
               >
@@ -202,12 +190,20 @@ export function SettingsPage() {
           </div>
         ) : (
           <div className="flex items-center gap-4">
-            <div
-              className="flex h-[4.5rem] w-[4.5rem] shrink-0 items-center justify-center rounded-[24px] text-3xl font-bold text-white"
-              style={{ backgroundColor: profile?.avatar_color ?? '#6366F1' }}
-            >
-              {initialsFromName(profile?.display_name ?? '?')}
-            </div>
+            {profile?.avatar_url ? (
+              <img
+                src={profile.avatar_url}
+                alt={profile.display_name}
+                className="h-[4.5rem] w-[4.5rem] shrink-0 rounded-[24px] object-cover"
+              />
+            ) : (
+              <div
+                className="flex h-[4.5rem] w-[4.5rem] shrink-0 items-center justify-center rounded-[24px] text-3xl font-bold text-white"
+                style={{ backgroundColor: profile?.avatar_color ?? '#6366F1' }}
+              >
+                {initialsFromName(profile?.display_name ?? '?')}
+              </div>
+            )}
             <div className="min-w-0 flex-1">
               <p className="text-sm text-text-secondary">Pseudonimo</p>
               <h2 className="mt-1 truncate text-xl font-semibold">{profile?.display_name ?? 'Profilo'}</h2>
@@ -245,7 +241,9 @@ export function SettingsPage() {
           type="button"
           onClick={handleLogout}
           disabled={isBusy}
-          className="panel flex min-h-14 w-full items-center gap-3 rounded-2xl px-4 text-left text-danger transition active:scale-[0.99] disabled:opacity-50"
+          className={cn(
+            'panel flex min-h-14 w-full items-center gap-3 rounded-2xl px-4 text-left text-danger transition active:scale-[0.99] disabled:opacity-50',
+          )}
         >
           <LogOut size={18} />
           <span className="text-sm font-semibold">{loggingOut ? 'Uscita in corso...' : "Esci dall'account"}</span>
@@ -286,7 +284,7 @@ export function SettingsPage() {
             <div className="mt-6 flex flex-col gap-3">
               <button
                 type="button"
-                onClick={handleDeleteAccount}
+                onClick={() => void handleDeleteAccount()}
                 disabled={deleteConfirmationText !== 'ELIMINA' || deletingAccount}
                 className="flex min-h-12 items-center justify-center rounded-xl bg-danger text-sm font-semibold text-white transition active:scale-[0.98] disabled:opacity-50"
               >

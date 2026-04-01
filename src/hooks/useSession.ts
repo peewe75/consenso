@@ -48,6 +48,7 @@ export function useSession(sessionId: string | null) {
             id: participant.user_id,
             display_name: profile?.display_name ?? 'Partecipante',
             avatar_color: profile?.avatar_color ?? '#6366F1',
+            avatar_url: profile?.avatar_url ?? null,
           },
           currentStatus: participant.user_id === user.id ? myStatus?.current_status ?? null : null,
           lastActionAt: participant.user_id === user.id ? myStatus?.last_action_at ?? null : null,

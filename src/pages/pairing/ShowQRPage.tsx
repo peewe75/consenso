@@ -118,6 +118,7 @@ export function ShowQRPage() {
             u: user.id,
             n: profile.display_name,
             a: profile.avatar_color,
+            ...(profile.avatar_url ? { i: profile.avatar_url } : {}),
           })
         : '',
     [code, profile, user],
