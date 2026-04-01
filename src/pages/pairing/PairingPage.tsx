@@ -30,7 +30,7 @@ export function PairingPage() {
 
   return (
     <main className="safe-page-tight space-y-8">
-      <button type="button" onClick={() => navigate(-1)} className="inline-flex min-h-11 items-center gap-2 rounded-full text-sm font-medium text-text-secondary transition active:scale-[0.98]">
+      <button type="button" onClick={() => navigate('/app')} className="inline-flex min-h-11 items-center gap-2 rounded-full text-sm font-medium text-text-secondary transition active:scale-[0.98]">
         <ChevronLeft size={18} />
         Torna indietro
       </button>

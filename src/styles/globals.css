@@ -14,13 +14,19 @@
   --color-text-primary: #25211C;
   --color-text-secondary: #6F6A63;
   --color-text-muted: #A8A29A;
+
+  /* Bento specific tokens */
+  --color-bento-teal: #D9EBE9;
+  --color-bento-teal-dark: #2D5B58;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
+  --radius-2xl: 32px;
   --radius-full: 9999px;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --shadow-soft: 0 4px 20px rgba(30,107,104,0.08);
+  --shadow-soft: 0 4px 14px rgba(37, 33, 28, 0.04);
+  --shadow-bento: 0 8px 30px rgba(37, 33, 28, 0.06);
   --shadow-accent: 0 4px 20px rgba(30,107,104,0.18);
   --color-warm-amber: #FFF8E7;
   --color-warm-rose: #FFF0F0;
@@ -90,9 +96,18 @@
   }
 
   .panel {
-    border: 1px solid var(--color-border);
+    border: 1px solid rgba(221, 212, 200, 0.4);
     background: var(--color-surface);
     box-shadow: var(--shadow-soft);
+  }
+
+  .bento-card {
+    background: #FFFFFF;
+    border: 1px solid rgba(221, 212, 200, 0.5);
+    border-radius: var(--radius-2xl);
+    padding: 24px;
+    box-shadow: var(--shadow-bento);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
   .text-balance {

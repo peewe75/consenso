@@ -1,42 +1,26 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChevronLeft, Clock3, ShieldCheck, Users } from 'lucide-react'
+import { ChevronLeft, Clock3, ShieldCheck } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ConsentButton } from '@/components/session/ConsentButton'
 import { useRealtime } from '@/hooks/useRealtime'
 import { useSession } from '@/hooks/useSession'
-import { useTimer } from '@/hooks/useTimer'
-import { formatSessionDate, formatSessionTime, getSessionStatusMeta, initialsFromName } from '@/lib/utils'
+import { formatSessionDate, formatSessionTime, getSessionStatusMeta } from '@/lib/utils'
 import { useAuthStore } from '@/stores/authStore'
 
-// ─── Semantic status badge map ──────────────────────────────────────────────────
-const statusBadge: Record<string, { bg: string; text: string; border: string }> = {
-  pending:   { bg: 'bg-warning/20',  text: 'text-warning',  border: 'border-warning/30' },
-  active:    { bg: 'bg-success/20',  text: 'text-success',  border: 'border-success/20' },
-  confirmed: { bg: 'bg-success/20',  text: 'text-success',  border: 'border-success/20' },
-  revoked:   { bg: 'bg-danger/20',   text: 'text-danger',   border: 'border-danger/30' },
-  expired:   { bg: 'bg-surface-2',   text: 'text-text-muted', border: 'border-border' },
-}
-// ─────────────────────────────────────────────────────────────────────────────
 
 export function SessionPage() {
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
   const { user } = useAuthStore()
   const { session, loading, error, confirmConsent, revokeConsent, reload } = useSession(id ?? null)
-  const { countdown, expiringSoon, expired } = useTimer(session?.expires_at ?? null)
   const [showRevokeSheet, setShowRevokeSheet] = useState(false)
 
   useRealtime(id ?? null, reload)
 
   const visualState = useMemo(() => {
     if (!session) return null
-    return getSessionStatusMeta(
-      expired && session.status !== 'revoked' && session.status !== 'confirmed'
-        ? 'expired'
-        : session.status,
-    )
-  }, [expired, session])
+    return getSessionStatusMeta(session.status)
+  }, [session])
 
   if (loading || !session || !visualState) {
     return (
@@ -48,12 +32,8 @@ export function SessionPage() {
     )
   }
 
-  const effectiveStatus = expired && !['revoked', 'confirmed'].includes(session.status) ? 'expired' : session.status
-  const badge = statusBadge[effectiveStatus] ?? statusBadge.expired
-  const myParticipant = session.participants.find((p) => p.user_id === user?.id)
   const otherParticipants = session.participants.filter((p) => p.user_id !== user?.id)
-  const canInteract = !expired && !['confirmed', 'revoked', 'expired'].includes(session.status)
-  const timerColor = expired ? 'text-danger' : expiringSoon ? 'text-warning' : 'text-success'
+  const canInteract = !['confirmed', 'revoked', 'expired'].includes(session.status)
 
   async function handleRevoke() {
     setShowRevokeSheet(false)
@@ -61,303 +41,170 @@ export function SessionPage() {
   }
 
   return (
-    <main
-      className="safe-page-tight space-y-6 bg-background"
-      style={{
-        paddingBottom: canInteract ? 'calc(env(safe-area-inset-bottom) + 220px)' : undefined,
-      }}
-    >
-      {/* Ambient glow */}
-      <div className="pointer-events-none fixed right-0 top-0 h-[44vh] w-1/2 rounded-full bg-accent/5 blur-[120px]" />
-      <div className="pointer-events-none fixed bottom-0 left-0 h-[26vh] w-full bg-gradient-to-t from-accent/5 to-transparent" />
+    <main className="min-h-screen bg-[#F7F4EE] px-6 pt-12 pb-24 relative overflow-hidden font-sans">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-[15%] left-[-5%] w-32 h-32 bg-[#1E6B68]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-[40%] right-[-10%] w-48 h-48 bg-[#E89E7A]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-24 left-10 opacity-20 pointer-events-none">
+        <div className="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center">
+           <div className="w-6 h-4 flex items-end gap-1">
+              <div className="w-1.5 h-2 bg-[#1E6B68] rounded-full" />
+              <div className="w-1.5 h-4 bg-[#1E6B68] rounded-full" />
+              <div className="w-1.5 h-3 bg-[#1E6B68] rounded-full" />
+           </div>
+        </div>
+      </div>
+      <div className="absolute top-[35%] right-8 opacity-20 pointer-events-none">
+          <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center">
+             <ShieldCheck size={20} className="text-[#1E6B68]" />
+          </div>
+      </div>
 
-      {/* Back button */}
-      <button
-        type="button"
-        onClick={() => navigate('/app')}
-        className="inline-flex min-h-11 items-center gap-2 rounded-full text-sm font-medium text-text-muted transition active:scale-[0.98]"
-      >
-        <ChevronLeft size={18} />
-        Torna alla home
-      </button>
+      <div className="max-w-md mx-auto space-y-8 animate-fade-in-up">
+        {/* Header Section */}
+        <div className="space-y-4">
+          <h1 className="text-3xl font-bold tracking-tight text-[#25211C]">
+            Stato del Consenso
+          </h1>
 
-      {/* ── Header card ─────────────────────────────────────────────────── */}
-      <section className="panel rounded-[28px] p-6">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <div className="mb-3 flex items-center gap-2">
-              <span
-                className={`rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${badge.bg} ${badge.text} ${badge.border}`}
-              >
-                {visualState.label}
-              </span>
+          {/* Status Banner */}
+          <div className="relative group overflow-hidden bg-[#D9EBE9] rounded-[24px] p-5 flex items-center justify-between border border-[#1E6B68]/10 shadow-[0_4px_20px_rgba(30,107,104,0.05)]">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-[#2D5B58] flex items-center justify-center shadow-sm">
+                <ShieldCheck size={22} className="text-white" />
+              </div>
+              <div className="space-y-0.5">
+                <p className="font-bold text-[#2D5B58] text-base">
+                  {visualState.label === 'Sessione attiva' ? 'Confermato e Attivo' : visualState.label}
+                </p>
+                <div className="flex items-center gap-1.5 text-[#2D5B58]/70 text-xs">
+                  <Clock3 size={12} />
+                  <span>Aggiornato alle {formatSessionTime(session.initiated_at)}</span>
+                </div>
+              </div>
             </div>
-            <h1 className="text-[2.5rem] font-extrabold leading-[0.95] tracking-tight text-text-primary">
-              Sessione di consenso
-            </h1>
-            <p className="mt-2 text-sm text-text-muted">{formatSessionDate(session.initiated_at)}</p>
+            <button 
+              onClick={() => navigate('/app')}
+              aria-label="Torna alla home"
+              className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/5 transition"
+            >
+              <ChevronLeft size={20} className="text-[#2D5B58] rotate-180" />
+            </button>
           </div>
         </div>
 
-        {/* Timer bento */}
-        <div className="mt-5 flex items-center justify-between overflow-hidden rounded-2xl border border-border bg-surface px-5 py-4">
-          <div className="flex flex-col gap-1">
-            <span className="text-[11px] uppercase tracking-[0.05em] text-text-muted">Scadenza sessione</span>
-            <div className="flex items-center gap-3">
-              <Clock3 size={20} className={timerColor} />
-              <span className={`font-mono text-[2rem] font-bold tracking-tighter ${timerColor}`}>
-                {countdown}
-              </span>
-            </div>
-          </div>
-          {/* Decorative ghost icon */}
-          <Clock3 size={64} className="opacity-5 text-text-primary" />
-        </div>
-      </section>
-
-      {/* ── Participants ─────────────────────────────────────────────────── */}
-      <section className="panel rounded-[28px] p-6">
-        <div className="mb-4 flex items-center gap-2">
-          <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-muted">
-            Partecipanti
-          </span>
-          <Users size={14} className="text-text-muted" />
-        </div>
-        <div className="space-y-3">
-          {myParticipant ? (
-            <ParticipantRow
-              name={`${myParticipant.profile.display_name} (tu)`}
-              color={myParticipant.profile.avatar_color}
-              avatarUrl={myParticipant.profile.avatar_url}
-              statusLabel={
-                myParticipant.currentStatus === 'confirmed'
-                  ? 'Hai confermato'
-                  : myParticipant.currentStatus === 'revoked'
-                    ? 'Hai revocato'
-                    : 'In attesa'
-              }
-              statusClass={
-                myParticipant.currentStatus === 'confirmed'
-                  ? 'bg-success/20 text-success border-success/20'
-                  : myParticipant.currentStatus === 'revoked'
-                    ? 'bg-danger/20 text-danger border-danger/20'
-                    : 'bg-accent/10 text-accent border-border/50'
-              }
-              caption={
-                myParticipant.lastActionAt
-                  ? `Ultima azione alle ${formatSessionTime(myParticipant.lastActionAt)}`
-                  : 'La tua scelta resta privata agli altri.'
-              }
-            />
-          ) : null}
-          {otherParticipants.map((p) => (
-            <ParticipantRow
-              key={p.id}
-              name={p.profile.display_name}
-              color={p.profile.avatar_color}
-              avatarUrl={p.profile.avatar_url}
-              statusLabel="Privato"
-              statusClass="bg-surface text-text-muted border-border"
-              caption="Mostriamo solo il conteggio aggregato delle conferme."
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* ── Aggregate ────────────────────────────────────────────────────── */}
-      <section className="panel rounded-[28px] px-5 py-5">
-        <div className="mb-3 flex items-center gap-2">
-          <ShieldCheck size={18} className="text-accent" />
-          <h2 className="text-base font-bold uppercase tracking-wide text-text-primary">Stato aggregato</h2>
-        </div>
-        <p className="text-sm leading-6 text-text-secondary">
-          {session.confirmedCount}/{session.participant_count} hanno confermato.
-        </p>
-        <p className="mt-2 text-sm leading-6 text-text-muted">
-          Gli stati individuali degli altri partecipanti non vengono esposti. Vedrai solo il tuo e il
-          conteggio totale.
-        </p>
-      </section>
-
-      {/* ── Action / Final state ─────────────────────────────────────────── */}
-      {canInteract ? (
-        <section className="panel hidden flex-col items-center gap-6 rounded-[28px] px-5 py-8 shadow-soft md:flex">
-          <div className="space-y-2 text-center">
-            <h2 className="text-xl font-bold text-text-primary">
-              {session.myStatus === 'confirmed' ? 'Il tuo consenso è registrato' : 'Conferma il tuo consenso'}
-            </h2>
-            <p className="px-4 text-sm text-text-muted">
-              La conferma è sempre revocabile. Ogni azione richiede pressione prolungata di 600 ms.
+        {/* Bento Grid */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* Card: With Who */}
+          <div className="bento-card bg-white col-span-1 min-h-[120px] flex flex-col justify-center">
+            <span className="text-[13px] text-[#A8A29A] font-medium mb-1">Con chi</span>
+            <p className="text-lg font-bold text-[#25211C] leading-tight">
+              {otherParticipants[0]?.profile.display_name || 'Nessun altro'}
             </p>
           </div>
 
-          {session.myStatus !== 'confirmed' ? (
-            <ConsentButton mode="confirm" onAction={confirmConsent} />
-          ) : (
-            <div className="flex flex-col items-center gap-4 text-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-success/20">
-                <ShieldCheck size={34} className="text-success" />
-              </div>
-              <p className="text-sm leading-6 text-text-secondary">
-                Se vuoi puoi ancora revocare la tua scelta prima della chiusura o della scadenza.
-              </p>
-              <button
-                type="button"
-                onClick={() => setShowRevokeSheet(true)}
-                className="flex min-h-12 items-center justify-center rounded-full border border-danger/30 bg-danger/10 px-6 text-sm font-semibold text-danger transition active:scale-[0.98]"
-              >
-                Apri revoca
-              </button>
-            </div>
-          )}
-        </section>
-      ) : (
-        <section className="panel rounded-[28px] px-5 py-6 text-center">
-          <p className="text-lg font-semibold text-text-primary">
-            {session.status === 'confirmed'
-              ? 'Sessione confermata'
-              : session.status === 'revoked'
-                ? 'Sessione revocata'
-                : 'Sessione scaduta'}
-          </p>
-          <p className="mt-2 text-sm leading-6 text-text-secondary">
-            {session.status === 'confirmed'
-              ? 'Tutti hanno confermato entro la finestra prevista.'
-              : session.status === 'revoked'
-                ? 'Una revoca è stata registrata e notificata in realtime agli altri partecipanti.'
-                : 'La finestra di cinque ore si è conclusa senza ulteriori azioni.'}
-          </p>
-        </section>
-      )}
+          {/* Card: Activity Type */}
+          <div className="bento-card bg-white col-span-1 min-h-[120px] flex flex-col justify-center">
+            <span className="text-[13px] text-[#A8A29A] font-medium mb-1">Tipo di Attività</span>
+            <p className="text-lg font-bold text-[#25211C] leading-tight">
+              {session.confirmedCount === session.participant_count ? 'Conferma Scambiata' : 'In attesa'}
+            </p>
+          </div>
 
-      {/* ── Revoke bottom sheet ──────────────────────────────────────────── */}
-      {canInteract ? (
-        <section className="fixed inset-x-0 bottom-0 z-40 px-[calc(env(safe-area-inset-left)+16px)] pb-[calc(env(safe-area-inset-bottom)+16px)] pr-[calc(env(safe-area-inset-right)+16px)] md:hidden">
-          <div className="panel rounded-[28px] px-4 py-4 shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.6)]">
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0 flex-1">
-                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-text-muted">
-                  Azione rapida
-                </p>
-                <h2 className="mt-1 text-base font-bold text-text-primary">
-                  {session.myStatus === 'confirmed'
-                    ? 'Consenso registrato'
-                    : 'Tieni premuto per confermare'}
-                </h2>
-                <p className="mt-1 text-xs leading-5 text-text-muted">
-                  {session.myStatus === 'confirmed'
-                    ? 'Puoi ancora aprire la revoca finche la sessione resta attiva.'
-                    : 'La CTA resta visibile qui in basso per un uso rapido su smartphone.'}
-                </p>
-              </div>
+          {/* Card: Date & Time */}
+          <div className="bento-card bg-white col-span-2 py-6 flex flex-col justify-center">
+            <span className="text-[13px] text-[#A8A29A] font-medium mb-1">Data e Ora</span>
+            <p className="text-xl font-bold text-[#25211C]">
+              {formatSessionDate(session.initiated_at)}, {formatSessionTime(session.initiated_at)}
+            </p>
+          </div>
 
-              {session.myStatus !== 'confirmed' ? (
-                <ConsentButton
-                  mode="confirm"
-                  onAction={confirmConsent}
-                  size="compact"
-                  label="Premi 600 ms"
-                />
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setShowRevokeSheet(true)}
-                  className="flex min-h-12 shrink-0 items-center justify-center rounded-full border border-danger/30 bg-danger/10 px-5 text-sm font-semibold text-danger transition active:scale-[0.98]"
-                >
-                  Apri revoca
-                </button>
-              )}
+          {/* Large Outcome Card */}
+          <div className="bento-card bg-white col-span-2 py-10 flex flex-col items-center justify-center text-center space-y-2">
+            <div className="text-2xl font-bold text-[#25211C] max-w-[200px] leading-[1.1]">
+              Consenso Reciproco Verificato
             </div>
           </div>
-        </section>
-      ) : null}
+        </div>
+
+        {/* Action Buttons */}
+        <div className="pt-4 space-y-4">
+          {canInteract && session.myStatus !== 'confirmed' ? (
+             <button
+                onClick={confirmConsent}
+                className="w-full bg-[#1E6B68] text-white font-bold py-5 rounded-[20px] shadow-lg active:scale-[0.98] transition hover:bg-[#16514f]"
+             >
+                Conferma Consenso
+             </button>
+          ) : (
+             <div className="w-full bg-[#1E6B68] text-white font-bold py-5 rounded-[20px] text-center shadow-lg flex items-center justify-center gap-2">
+                <ShieldCheck size={20} />
+                Confermato
+             </div>
+          )}
+
+          <button
+            onClick={() => setShowRevokeSheet(true)}
+            className="w-full bg-[#D9EBE9] text-[#1E6B68] border border-[#1E6B68]/20 font-bold py-5 rounded-[20px] active:scale-[0.98] transition hover:bg-[#c9dfdd]"
+          >
+            Revoca o Modifica
+          </button>
+
+          <div className="flex flex-col items-center gap-6 pt-4">
+            <button className="text-[#6F6A63] text-sm underline font-medium hover:text-[#25211C] transition">
+              Gestisci Preferenze di Privacy
+            </button>
+            
+            <button 
+              onClick={() => navigate('/history')}
+              className="bg-white px-8 py-4 rounded-full text-[#25211C] font-bold text-base shadow-sm border border-[#DDD4C8]/50 active:scale-[0.95] transition"
+            >
+              Cronologia Attività
+            </button>
+          </div>
+        </div>
+      </div>
 
       <AnimatePresence>
-        {showRevokeSheet ? (
+        {showRevokeSheet && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/65 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end"
           >
-            <button
-              type="button"
-              aria-label="Chiudi dialog revoca"
-              className="absolute inset-0"
-              onClick={() => setShowRevokeSheet(false)}
-            />
-            <motion.section
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 30, opacity: 0 }}
-              className="absolute inset-x-0 bottom-0 rounded-t-[32px] border-t border-border bg-surface px-5 pb-[calc(env(safe-area-inset-bottom)+24px)] pt-6"
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              className="w-full bg-white rounded-t-[32px] p-8 pb-12 space-y-6"
             >
-              <div className="mx-auto mb-5 h-1.5 w-12 rounded-full bg-border" />
-              <h3 className="text-xl font-bold text-text-primary">Revoca il consenso</h3>
-              <p className="mt-2 max-w-sm text-sm leading-6 text-text-secondary">
-                Stai per revocare il tuo consenso. Questa azione è immediata e tutti i partecipanti ne saranno
-                informati.
-              </p>
-              <div className="mt-6 flex flex-col items-center gap-4">
-                <ConsentButton mode="revoke" onAction={handleRevoke} />
+              <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto" />
+              <div className="space-y-2">
+                <h3 className="text-xl font-bold text-[#25211C]">Sei sicuro?</h3>
+                <p className="text-[#6F6A63] text-sm leading-relaxed">
+                  Stai per revocare il tuo consenso. Questa azione è immediata e irreversibile per questa sessione.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
                 <button
-                  type="button"
                   onClick={() => setShowRevokeSheet(false)}
-                  className="flex min-h-12 w-full items-center justify-center rounded-full border border-border bg-transparent text-sm font-medium text-text-primary transition active:scale-[0.98]"
+                  className="py-4 rounded-2xl bg-gray-100 text-[#25211C] font-bold"
                 >
                   Annulla
                 </button>
+                <button
+                  onClick={handleRevoke}
+                  className="py-4 rounded-2xl bg-danger text-white font-bold"
+                >
+                  Revoca
+                </button>
               </div>
-            </motion.section>
+            </motion.div>
           </motion.div>
-        ) : null}
+        )}
       </AnimatePresence>
     </main>
   )
 }
 
-// ─── ParticipantRow ───────────────────────────────────────────────────────────
-
-function ParticipantRow({
-  name,
-  color,
-  avatarUrl,
-  statusLabel,
-  statusClass,
-  caption,
-}: {
-  name: string
-  color: string
-  avatarUrl: string | null
-  statusLabel: string
-  statusClass: string
-  caption: string
-}) {
-  return (
-    <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-3 py-3">
-      {avatarUrl ? (
-        <img
-          src={avatarUrl}
-          alt={name}
-          className="h-12 w-12 shrink-0 rounded-2xl object-cover shadow-soft"
-        />
-      ) : (
-        <div
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-base font-bold text-white shadow-soft"
-          style={{ backgroundColor: color }}
-        >
-          {initialsFromName(name)}
-        </div>
-      )}
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold text-text-primary">{name}</p>
-        <p className="mt-0.5 text-xs leading-5 text-text-muted">{caption}</p>
-      </div>
-      <span
-        className={`rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${statusClass}`}
-      >
-        {statusLabel}
-      </span>
-    </div>
-  )
-}
